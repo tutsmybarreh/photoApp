@@ -43,12 +43,17 @@ class App extends Component {
         console.log(this.state)
         return (
             <div>
-                <Menu
-                menutoggle={this.state.menutoggle}
-                toggleMenu={()=>this.toggleMenu()}
-                />
                 <div>
-                    <Navbar toggleMenu={()=>this.toggleMenu()}/>
+                    <Menu
+                    menutoggle={this.state.menutoggle}
+                    toggleMenu={()=>this.toggleMenu()}
+                    />
+                </div>
+                <div className={this.state.menutoggle ? 'AppFrameFolded' : 'AppFrameNormal'}>
+                    <Navbar
+                        menutoggle={this.state.menutoggle}
+                        toggleMenu={()=>this.toggleMenu()}
+                    />
                 </div>
             </div>
         );

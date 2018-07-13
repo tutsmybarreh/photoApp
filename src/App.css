@@ -1,4 +1,16 @@
 body{
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.AppFrameFolded {
+  text-align: right;
+}
+
+.AppFrameNormal {
+    text-align: right;
+}
+
+.IconButtonToggled {
+  text-align: right;
 }
