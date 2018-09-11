@@ -1,14 +1,22 @@
 import React, { Component } from 'react';
 import Navbar from "./navbar.js";
 import Menu from "./menu.js";
-import './App.css'
+import './App.css';
+import filestructure from './dataStructure.json';
 
 class App extends Component {
     constructor(props){
         super(props);
         this.state = {
             menutoggle:false,
+            filestructure:null,
         }
+    }
+
+    componentDidMount() {
+        this.setState({
+            filestructure:filestructure.folders,
+        });
     }
 
     toggleMenu(input){
@@ -43,17 +51,13 @@ class App extends Component {
         console.log(this.state)
         return (
             <div>
+                <Menu
+                menutoggle={this.state.menutoggle}
+                toggleMenu={()=>this.toggleMenu()}
+                filestructure={this.state.filestructure}
+                />
                 <div>
-                    <Menu
-                    menutoggle={this.state.menutoggle}
-                    toggleMenu={()=>this.toggleMenu()}
-                    />
-                </div>
-                <div className={this.state.menutoggle ? 'AppFrameFolded' : 'AppFrameNormal'}>
-                    <Navbar
-                        menutoggle={this.state.menutoggle}
-                        toggleMenu={()=>this.toggleMenu()}
-                    />
+                    <Navbar toggleMenu={()=>this.toggleMenu()}/>
                 </div>
             </div>
         );
