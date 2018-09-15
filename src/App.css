@@ -3,14 +3,6 @@ body{
   padding: 0;
 }
 
-.AppFrameFolded {
-  text-align: right;
-}
-
-.AppFrameNormal {
-    text-align: right;
-}
-
-.IconButtonToggled {
-  text-align: right;
+.dashpadding {
+  padding:10px;
 }
