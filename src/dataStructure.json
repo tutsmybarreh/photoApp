@@ -5,8 +5,8 @@
             "description":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
             "path": "images/test1",
             "images": {
-                "testing1":"testing.jpg",
-                "testing2":"testing2.jpg"
+                "This is how we do it":"testing.jpg",
+                "What can a poor man do? Except dricka öl":"testing2.jpg"
             }
         },
         {

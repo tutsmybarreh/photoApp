@@ -12,13 +12,13 @@ render(){
         return(
             <div>
             <AppBar position="static">
-                <Toolbar>
+                <Toolbar className='menugradient'>
                     <IconButton className={this.props.menutoggle ? "IconButtonToggled":""} color="inherit" aria-label="Menu" onClick={()=>this.props.toggleMenu()}>
                         <MenuIcon />
                     </IconButton>
                     {this.props.menutoggle ? '': (
                     <Typography variant="title" color="inherit">
-                    SquaresTest
+                    Tilde
                 </Typography>)
                     }
                 </Toolbar>

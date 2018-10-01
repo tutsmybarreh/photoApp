@@ -2,7 +2,43 @@ body{
   margin: 0;
   padding: 0;
 }
-
+/* App.js */
 .dashpadding {
   padding:10px;
+}
+/* navbar.js */
+.menugradient {
+    background-image: linear-gradient(to right, #3366ff, #809fff);
+}
+
+/* collectionView.js */
+.photoCard{
+  padding-top:10px;
+  padding-bottom: 5px;
+  max-width: 600px;
+  margin:auto;
+}
+
+.padderino {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+}
+
+.polaroid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding-left:5%;
+  padding-right:5%;
+  padding-top:5%;
+  padding-bottom: 15%;
+}
+
+.testPicture{
+  height:100%;
+  width:100%;
+  background-color: black;
 }
