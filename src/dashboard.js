@@ -13,6 +13,10 @@ class Dashboard extends Component {
                 ) : (
                     <AuthScreen
                     isAuth={this.props.isAuth()}
+                    pin={this.props.pin}
+                    pinAddNumber={this.props.pinAddNumber.bind(this)}
+                    clearPin={this.props.clearPin.bind(this)}
+                    enterPin={this.props.enterPin.bind(this)}
                     />
                 )}
             </div>

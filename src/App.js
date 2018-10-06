@@ -4,6 +4,8 @@ import Menu from "./menu.js";
 import './App.css';
 import Dashboard from'./dashboard.js'
 import filestructure from './dataStructure.json';
+import token from './token.json';
+import hash from 'crypto-js/sha256';
 
 class App extends Component {
     constructor(props){
@@ -11,8 +13,9 @@ class App extends Component {
         this.state = {
             menutoggle:false,
             filestructure:null,
-            auth:false,              //Auth with PIN
+            auth:false,            //Auth with PIN
             collection:null,       //Allways false if auth false,
+            pin:"",
         }
     }
 
@@ -80,7 +83,6 @@ class App extends Component {
     }
 
     getView(){
-        //ADD ELSE IF EMPTY
         return this.state.collection;
     }
 
@@ -89,6 +91,30 @@ class App extends Component {
             return true;
         }
         else return false;
+    }
+
+    pinAddNumber(number){
+        this.setState({
+            pin:this.state.pin+number,
+        });
+    }
+
+    clearPin(){
+        this.setState({
+            pin:"",
+        });
+    }
+
+    enterPin(){
+        let hashed = hash(this.state.pin).toString().toLowerCase();
+        this.setState({
+            pin:"",
+        });
+        if (hashed===token.token.toLowerCase()){
+            this.setState({
+                auth:true,
+            });
+        }
     }
 
     render() {
@@ -108,6 +134,10 @@ class App extends Component {
                         getCollections={this.getCollections.bind(this)}
                         getView={this.getView.bind(this)}
                         isAuth={this.isAuth.bind(this)}
+                        pin={this.state.pin}
+                        pinAddNumber={this.pinAddNumber.bind(this)}
+                        clearPin={this.clearPin.bind(this)}
+                        enterPin={this.enterPin.bind(this)}
                     />
                 </div>
             </div>

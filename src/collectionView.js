@@ -11,7 +11,6 @@ class CollectionView extends Component {
         let album = [];
         for (var object in images){
             let image = imagePath(path+images[object]);
-            console.log(image)
             album.push(
                 <div key={object}>
                     <div className='photoCard'>
