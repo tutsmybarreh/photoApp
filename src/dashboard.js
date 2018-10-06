@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import CollectionView from'./collectionView.js'
+import CollectionView from'./collectionView.js';
+import AuthScreen from'./authScreen.js';
 
 class Dashboard extends Component {
     render(){
@@ -10,7 +11,9 @@ class Dashboard extends Component {
                     collection={this.props.getCollections(this.props.getView())}
                     />
                 ) : (
-                    <h1>Handle No Auth and Default Screen</h1>
+                    <AuthScreen
+                    isAuth={this.props.isAuth()}
+                    />
                 )}
             </div>
         );

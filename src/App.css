@@ -51,3 +51,9 @@ body{
   height:100%;
   object-fit:cover;
 }
+
+/* authScreen.js */
+.NumberPad{
+  max-width: 600px;
+  margin:auto;
+}
