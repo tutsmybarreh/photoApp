@@ -25,7 +25,7 @@ class Menu extends Component {
                                             <ImageIcon />
                                     </Avatar>
                                 </ListItemAvatar>
-                                <ListItemText primary="Bilder" />
+                                <ListItemText primary="Album" />
                             </ListItem>
                         </List>
                         <Divider />

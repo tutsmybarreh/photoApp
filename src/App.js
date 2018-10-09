@@ -13,16 +13,36 @@ class App extends Component {
         this.state = {
             menutoggle:false,
             filestructure:null,
-            auth:false,            //Auth with PIN
-            collection:null,       //Allways false if auth false,
+            auth:true,            //Auth with PIN
+            collection:null,
             pin:"",
+            fixedNav: false,
         }
+        this.handleScroll = this.handleScroll.bind(this);
     }
 
     componentDidMount() {
         this.setState({
             filestructure:filestructure.folders,
         });
+        window.addEventListener('scroll', this.handleScroll);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.handleScroll);
+    }
+
+    handleScroll() {
+        if (window.scrollY > 65 && !this.state.fixedNav) {
+            this.setState({
+                fixedNav: true,
+            });
+        }
+         else if (window.scrollY < 65 && this.state.fixedNav) {
+            this.setState({
+                fixedNav: false,
+            });
+        }
     }
 
     toggleMenu(input){
@@ -46,7 +66,7 @@ class App extends Component {
             }
             if (input==="close"){
                 this.setState({
-                    menutoggle:true,
+                    menutoggle:false,
                 });
             }
         }
@@ -119,15 +139,21 @@ class App extends Component {
 
     render() {
         return (
-            <div>
-                <Menu
-                    menutoggle={this.state.menutoggle}
-                    toggleMenu={()=>this.toggleMenu()}
-                    getCollections={this.getCollections.bind(this)}
-                    selectCollection={this.selectCollection.bind(this)}
-                />
+            <div className={this.state.fixedNav ? 'navBarStick':''}>
                 <div>
-                    <Navbar toggleMenu={()=>this.toggleMenu()}/>
+                    <Menu
+                        menutoggle={this.state.menutoggle}
+                        toggleMenu={this.toggleMenu.bind(this)}
+                        getCollections={this.getCollections.bind(this)}
+                        selectCollection={this.selectCollection.bind(this)}
+                        />
+                </div>
+                <div>
+                    <Navbar
+                        menutoggle={this.state.menutoggle}
+                        fixedNav={this.state.fixedNav}
+                        toggleMenu={()=>this.toggleMenu()}
+                        />
                 </div>
                 <div className='dashpadding'>
                     <Dashboard
@@ -138,7 +164,7 @@ class App extends Component {
                         pinAddNumber={this.pinAddNumber.bind(this)}
                         clearPin={this.clearPin.bind(this)}
                         enterPin={this.enterPin.bind(this)}
-                    />
+                        />
                 </div>
             </div>
         );

@@ -7,10 +7,18 @@ body{
 .dashpadding {
   padding:10px;
 }
-/* navbar.js */
-.menugradient {
-    background-image: linear-gradient(to right, #3366ff, #809fff);
+
+.navBarStick{
+  padding-top: 60px;
+
 }
+/* navbar.js */
+.navbarColor {
+    background-color: #ffffff;
+    /* background-image: linear-gradient(to right,#3366ff, #a180ff, 	#80dfff); */
+}
+
+/* menu.js */
 
 /* collectionView.js */
 .photoCard{
