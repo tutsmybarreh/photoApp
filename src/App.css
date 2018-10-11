@@ -18,6 +18,10 @@ body{
     /* background-image: linear-gradient(to right,#3366ff, #a180ff, 	#80dfff); */
 }
 
+.CenterTilde{
+
+}
+
 /* menu.js */
 
 /* collectionView.js */
@@ -63,12 +67,14 @@ body{
 /* authScreen.js */
 .PadContainer{
   position: fixed;
-  top: 50%;
+  top: 100%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -100%);
 }
 .NumberPad{
+  width: 100vw;
   max-width: 500px;
   min-width: 200px;
   margin:auto;
+  padding-bottom: 32px;
 }

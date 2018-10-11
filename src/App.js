@@ -13,7 +13,7 @@ class App extends Component {
         this.state = {
             menutoggle:false,
             filestructure:null,
-            auth:true,            //Auth with PIN
+            auth:false,            //Auth with PIN
             collection:null,
             pin:"",
             fixedNav: false,
