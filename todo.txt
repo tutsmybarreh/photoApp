@@ -1,7 +1,3 @@
-Make App Persistent, Done
-https://hackernoon.com/how-to-take-advantage-of-local-storage-in-your-react-projects-a895f2b2d3f2
-Add timer to session, perhaps epoch time units delta?
-
 Defaultscreen
 Perhaps Remove Divider between "bilder" and Albums
 make images clickable

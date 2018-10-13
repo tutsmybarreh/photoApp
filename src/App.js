@@ -17,6 +17,7 @@ class App extends Component {
             collection:null,
             pin:"",
             fixedNav: false,
+            storeState: true,
         }
         this.handleScroll = this.handleScroll.bind(this);
     }
@@ -27,32 +28,36 @@ class App extends Component {
             filestructure:filestructure.folders,
         });
         window.addEventListener('scroll', this.handleScroll);
-        window.addEventListener(
-            "beforeunload",
-            this.saveState.bind(this)
-        );
     }
 
     componentWillUnmount() {
         window.removeEventListener('scroll', this.handleScroll);
-        window.removeEventListener(
-            "beforeunload",
-            this.saveState.bind(this)
-        );
+    }
+
+    componentDidUpdate(){
+        this.saveState();
     }
 
     saveState(){
-        for (let key in this.state) {
-     localStorage.setItem(key, JSON.stringify(this.state[key]));
-   }
+        if (this.state.storeState){
+            for (let key in this.state) {
+                localStorage.setItem(key, JSON.stringify(this.state[key]));
+            }
+        }
     }
 
     loadState(){
         for (let key in this.state) {
             if (localStorage.hasOwnProperty(key)) {
-                this.setState({
-                    [key]: JSON.parse(localStorage.getItem(key)),
-                });
+                try {
+                    this.setState({
+                        [key]: JSON.parse(localStorage.getItem(key)),
+                    });
+                } catch (e) {
+                    this.setState({
+                        [key]: localStorage.getItem(key),
+                    });
+                }
             }
         }
     }
@@ -63,7 +68,7 @@ class App extends Component {
                 fixedNav: true,
             });
         }
-         else if (window.scrollY < 65 && this.state.fixedNav) {
+        else if (window.scrollY < 65 && this.state.fixedNav) {
             this.setState({
                 fixedNav: false,
             });
@@ -131,6 +136,12 @@ class App extends Component {
         return this.state.collection;
     }
 
+    clearView(){
+        this.setState({
+            collection:null,
+        });
+    }
+
     isAuth(){
         if (this.state.auth){
             return true;
@@ -159,8 +170,17 @@ class App extends Component {
             this.setState({
                 auth:true,
                 pin:"",
+                storeState:true,
             });
         }
+    }
+
+    endSession(){
+        this.setState({
+            auth:false,
+            storeState:false,
+        });
+        localStorage.clear();
     }
 
     render() {
@@ -179,6 +199,9 @@ class App extends Component {
                         menutoggle={this.state.menutoggle}
                         fixedNav={this.state.fixedNav}
                         toggleMenu={()=>this.toggleMenu()}
+                        isAuth={this.isAuth.bind(this)}
+                        clearView={()=>this.clearView()}
+                        endSession={()=>this.endSession()}
                         />
                 </div>
                 <div className='dashpadding'>
