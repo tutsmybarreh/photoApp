@@ -22,14 +22,39 @@ class App extends Component {
     }
 
     componentDidMount() {
+        this.loadState();
         this.setState({
             filestructure:filestructure.folders,
         });
         window.addEventListener('scroll', this.handleScroll);
+        window.addEventListener(
+            "beforeunload",
+            this.saveState.bind(this)
+        );
     }
 
     componentWillUnmount() {
         window.removeEventListener('scroll', this.handleScroll);
+        window.removeEventListener(
+            "beforeunload",
+            this.saveState.bind(this)
+        );
+    }
+
+    saveState(){
+        for (let key in this.state) {
+     localStorage.setItem(key, JSON.stringify(this.state[key]));
+   }
+    }
+
+    loadState(){
+        for (let key in this.state) {
+            if (localStorage.hasOwnProperty(key)) {
+                this.setState({
+                    [key]: JSON.parse(localStorage.getItem(key)),
+                });
+            }
+        }
     }
 
     handleScroll() {
@@ -133,6 +158,7 @@ class App extends Component {
         if (hashed===token.token.toLowerCase()){
             this.setState({
                 auth:true,
+                pin:"",
             });
         }
     }
