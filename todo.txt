@@ -1,8 +1,10 @@
-Defaultscreen
-Perhaps Remove Divider between "bilder" and Albums
-make images clickable
+-Finish up defaultScreen
+-Make images clickable
+-Landscape overflow
+-Style up CollectionView picture frame and Caption Text
 
-Style CollectionView Picute frame and caption text
-Landscape mode overflow?
-
-If removing images from site fix pathing from dataStructure in collectionView
+Maybe:
+-Function for numpad in authScreen.js
+-Remove divider in between "Album" and collections menu.js
+-Migrate images from application to backend
+-DefaultScreen External Data File

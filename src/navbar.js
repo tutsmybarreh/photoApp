@@ -8,7 +8,7 @@ import Icon from '@material-ui/core/Icon';
 class Navbar extends Component {
     render(){
         let color = '#ffffff';
-        if (this.props.isAuth)(
+        if (this.props.isAuth())(
             color = '#3366ff'
         )
         return(

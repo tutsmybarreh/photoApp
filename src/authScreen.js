@@ -3,6 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
+import DefaultScreen from'./defaultScreen.js';
 
 class AuthScreen extends Component {
     render(){
@@ -10,10 +11,10 @@ class AuthScreen extends Component {
         return(
             <div>
             {this.props.isAuth ? (
-                <h1>Default Screen</h1>
+                <DefaultScreen />
             ):(
                 <div>
-                    <Typography style={{color: '000000'}} variant="headline" component="h1" align='center'>
+                    <Typography style={{color: '000000'}} variant="headline" align='center'>
                         {this.props.pin === "" ? "Lösenkod": this.props.pin}
                     </Typography>
 

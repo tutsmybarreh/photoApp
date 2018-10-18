@@ -24,7 +24,7 @@ yarn-error.log*
 /src/token.json
 
 #images
-/src/images
+/src/images*
 
 #dataStructure
 /src/dataStructure.json

@@ -39,10 +39,10 @@ class CollectionView extends Component {
         let path = this.props.collection.path;
         return(
             <div>
-                <Typography variant="headline" component="h1" align={align}>
+                <Typography variant="headline" align={align}>
                     {this.props.collection.name}
                 </Typography>
-                <Typography component="p" align={align}>
+                <Typography align={align}>
                     {this.props.collection.description}
                 </Typography>
                 <Divider />
