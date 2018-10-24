@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
 
 class CollectionView extends Component {
@@ -20,13 +19,13 @@ class CollectionView extends Component {
                                     <div className='picturFrame'>
                                         <img src={image} className='pictureHolder' alt=''/>
                                     </div>
-                                    <Typography variant="caption">
-                                        {object}
-                                    </Typography>
                                 </div>
                             </div>
                         </Paper>
                     </div>
+                    <Typography align={align} paragraph={true}>
+                        {object}
+                    </Typography>
                 </div>
             )
         }
@@ -42,10 +41,9 @@ class CollectionView extends Component {
                 <Typography variant="headline" align={align}>
                     {this.props.collection.name}
                 </Typography>
-                <Typography align={align}>
+                <Typography align={align} variant="subheading" paragraph={true}>
                     {this.props.collection.description}
                 </Typography>
-                <Divider />
                 {this.createAlbum(images, align, path)}
             </div>
         );

@@ -3,6 +3,7 @@ import Navbar from "./navbar.js";
 import Menu from "./menu.js";
 import './App.css';
 import Dashboard from'./dashboard.js'
+import FullscreenView from'./fullScreenView.js'
 import filestructure from './dataStructure.json';
 import token from './token.json';
 import hash from 'crypto-js/sha256';
@@ -17,6 +18,7 @@ class App extends Component {
             collection:null,
             pin:"",
             fixedNav: false,
+            fullscreenView: false,
             storeState: true,
         }
         this.handleScroll = this.handleScroll.bind(this);
@@ -175,6 +177,19 @@ class App extends Component {
         }
     }
 
+    toggleFullScreen(){
+        if (this.state.fullscreenView){
+            this.setState({
+                fullscreenView:false,
+            });
+        }
+        else {
+            this.setState({
+                fullscreenView:true,
+            });
+        }
+    }
+
     endSession(){
         this.setState({
             auth:false,
@@ -214,6 +229,11 @@ class App extends Component {
                         clearPin={this.clearPin.bind(this)}
                         enterPin={this.enterPin.bind(this)}
                         />
+                </div>
+                <div>
+                <FullscreenView
+                    fullscreenView={this.state.fullscreenView}
+                />
                 </div>
             </div>
         );

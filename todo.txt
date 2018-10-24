@@ -1,10 +1,9 @@
--Finish up defaultScreen
 -Make images clickable
--Landscape overflow
--Style up CollectionView picture frame and Caption Text
+-Landscape overflow on Autscreen
 
 Maybe:
 -Function for numpad in authScreen.js
 -Remove divider in between "Album" and collections menu.js
 -Migrate images from application to backend
 -DefaultScreen External Data File
+-Style up CollectionView picture frame
