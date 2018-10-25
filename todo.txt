@@ -1,5 +1,4 @@
--Make images clickable
--Landscape overflow on Autscreen
+-Landscape overflow on Authscreen
 
 Maybe:
 -Function for numpad in authScreen.js

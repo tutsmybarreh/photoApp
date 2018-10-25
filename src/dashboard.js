@@ -9,6 +9,7 @@ class Dashboard extends Component {
                 {this.props.getView() && this.props.isAuth() ? (
                     <CollectionView
                     collection={this.props.getCollections(this.props.getView())}
+                    toggleFullScreen={this.props.toggleFullScreen.bind(this)}
                     />
                 ) : (
                     <AuthScreen

@@ -19,6 +19,8 @@ class App extends Component {
             pin:"",
             fixedNav: false,
             fullscreenView: false,
+            fullscreenImage:"",
+            fullscreenText:"",
             storeState: true,
         }
         this.handleScroll = this.handleScroll.bind(this);
@@ -177,7 +179,7 @@ class App extends Component {
         }
     }
 
-    toggleFullScreen(){
+    toggleFullScreen(input, text){
         if (this.state.fullscreenView){
             this.setState({
                 fullscreenView:false,
@@ -186,6 +188,8 @@ class App extends Component {
         else {
             this.setState({
                 fullscreenView:true,
+                fullscreenImage:input,
+                fullscreenText:text,
             });
         }
     }
@@ -228,11 +232,15 @@ class App extends Component {
                         pinAddNumber={this.pinAddNumber.bind(this)}
                         clearPin={this.clearPin.bind(this)}
                         enterPin={this.enterPin.bind(this)}
+                        toggleFullScreen={this.toggleFullScreen.bind(this)}
                         />
                 </div>
                 <div>
                 <FullscreenView
                     fullscreenView={this.state.fullscreenView}
+                    toggleFullScreen={this.toggleFullScreen.bind(this)}
+                    fullscreenImage={this.state.fullscreenImage}
+                    fullscreenText={this.state.fullscreenText}
                 />
                 </div>
             </div>

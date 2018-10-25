@@ -8,11 +8,11 @@ class CollectionView extends Component {
         const imagePath = require.context('./images', true);
         // const imagePath = require.context(this.props.collection.path, true);
         let album = [];
-        for (var object in images){
+        for (let object in images){
             let image = imagePath(path+images[object]);
             album.push(
                 <div key={object}>
-                    <div className='photoCard'>
+                    <div className='photoCard' onClick={()=>this.props.toggleFullScreen(image, object)}>
                         <Paper elevation={1} square={true}>
                             <div className='padderino'>
                                 <div className='polaroid'>
