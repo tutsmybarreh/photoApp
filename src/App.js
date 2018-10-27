@@ -21,6 +21,7 @@ class App extends Component {
             fullscreenView: false,
             fullscreenImage:"",
             fullscreenText:"",
+            fullscreenTextOn:true,
             storeState: true,
         }
         this.handleScroll = this.handleScroll.bind(this);
@@ -184,15 +185,32 @@ class App extends Component {
             this.setState({
                 fullscreenView:false,
             });
+            document.getElementsByTagName("Meta").viewport.setAttribute('content', 'viewport-fit=cover, width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no')
         }
         else {
             this.setState({
                 fullscreenView:true,
                 fullscreenImage:input,
                 fullscreenText:text,
+                fullscreenTextOn:true,
+            });
+            document.getElementsByTagName("Meta").viewport.setAttribute('content', 'viewport-fit=cover, width=device-width, initial-scale=1, maximum-scale=2.0, user-scalable=yes, shrink-to-fit=no')
+        }
+    }
+
+    toggleText(){
+        if (this.state.fullscreenTextOn){
+            this.setState({
+                fullscreenTextOn:false,
+            });
+        }
+        else {
+            this.setState({
+                fullscreenTextOn:true,
             });
         }
     }
+
 
     endSession(){
         this.setState({
@@ -236,12 +254,14 @@ class App extends Component {
                         />
                 </div>
                 <div>
-                <FullscreenView
-                    fullscreenView={this.state.fullscreenView}
-                    toggleFullScreen={this.toggleFullScreen.bind(this)}
-                    fullscreenImage={this.state.fullscreenImage}
-                    fullscreenText={this.state.fullscreenText}
-                />
+                    <FullscreenView
+                        fullscreenView={this.state.fullscreenView}
+                        toggleFullScreen={this.toggleFullScreen.bind(this)}
+                        fullscreenImage={this.state.fullscreenImage}
+                        fullscreenText={this.state.fullscreenText}
+                        fullscreenTextOn={this.state.fullscreenTextOn}
+                        toggleText={this.toggleText.bind(this)}
+                        />
                 </div>
             </div>
         );

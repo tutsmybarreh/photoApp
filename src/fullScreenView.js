@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
-import Typography from '@material-ui/core/Typography';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+import Chip from '@material-ui/core/Chip';
 
 class FullscreenView extends Component{
     render(){
@@ -14,13 +12,13 @@ class FullscreenView extends Component{
                     fullScreen
                     open={this.props.fullscreenView}
                     >
-                    <AppBar position="fixed">
-                        <Toolbar className='navbarColor'>
-                            <Typography>
-                                {this.props.fullscreenText}
-                            </Typography>
-                        </Toolbar>
-                    </AppBar>
+                    {this.props.fullscreenTextOn ? (
+                        <Chip style={{position:'fixed',backgroundColor: '#ffffff',top:10,left:10}}
+                            label={this.props.fullscreenText}
+                            onDelete={()=>this.props.toggleText()}
+                            variant='outlined'
+                            />
+                    ):''}
                     <div className='photoCardFull'>
                         <img src={this.props.fullscreenImage} className='pictureFullScreen' alt=''/>
                     </div>
@@ -32,5 +30,6 @@ class FullscreenView extends Component{
         );
     }
 }
+
 
 export default FullscreenView;
