@@ -1,22 +1,93 @@
 {
-    "folders" :[
-        {
-            "name": "Birth Of Photapp",
-            "description":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
-            "path": "./first/",
-            "images": {
-                "Testing 123 123 123123 ":"testing.png",
-                "Testing 231203129319912391":"testing.png"
-            }
-        },
-        {
-            "name": "First Days Online",
-            "description":"Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            "path": "./first/",
-            "images": {
-                "testing1":"testing.png",
-                "testing2":"testing.png"
-            }
-        }
-    ]
+  "folders": [
+    {
+      "name": "Prolog",
+      "description": "Prolog",
+      "path": "./Prolog/",
+      "images": {
+        "01_Riga.jpeg": "01_Riga.jpeg",
+        "02_Riga.jpeg": "02_Riga.jpeg",
+        "03_January.jpeg": "03_January.jpeg",
+        "04_Kub.jpg": "04_Kub.jpg",
+        "05_NY.jpeg": "05_NY.jpeg",
+        "06_NY.jpeg": "06_NY.jpeg",
+        "07_NY.jpeg": "07_NY.jpeg",
+        "08_Ultraljud.jpg": "08_Ultraljud.jpg",
+        "09_Faro.jpeg": "09_Faro.jpeg",
+        "10_MarcusBrollop.jpeg": "10_MarcusBrollop.jpeg"
+      }
+    },
+    {
+      "name": "Forlossning",
+      "description": "Forlossning",
+      "path": "./Forlossning/",
+      "images": {
+        "01_Antenatal.jpeg": "01_Antenatal.jpeg",
+        "02_Forlossning.jpeg": "02_Forlossning.jpeg",
+        "03_Undersokning.jpeg": "03_Undersokning.jpeg",
+        "04_Vagning.jpeg": "04_Vagning.jpeg",
+        "05_Matning.jpeg": "05_Matning.jpeg",
+        "06_Pappa.jpeg": "06_Pappa.jpeg",
+        "07_Pappa.jpeg": "07_Pappa.jpeg",
+        "08_Sotnos.jpeg": "08_Sotnos.jpeg",
+        "09_Titta.jpeg": "09_Titta.jpeg",
+        "10_Inburrad.jpeg": "10_Inburrad.jpeg",
+        "11_Mamma.jpeg": "11_Mamma.jpeg",
+        "12_Mamma.jpeg": "12_Mamma.jpeg",
+        "13_Mamma.jpeg": "13_Mamma.jpeg"
+      }
+    },
+    {
+      "name": "PaBB",
+      "description": "PaBB",
+      "path": "./PaBB/",
+      "images": {
+        "01_Pappa.jpeg": "01_Pappa.jpeg",
+        "02_Pappa.jpeg": "02_Pappa.jpeg",
+        "03_Pappa.jpeg": "03_Pappa.jpeg",
+        "04_Inzoom.jpeg": "04_Inzoom.jpeg",
+        "05_Mamma.jpeg": "05_Mamma.jpeg",
+        "06_Pyjamas.jpeg": "06_Pyjamas.jpeg",
+        "07_Pappa.jpeg": "07_Pappa.jpeg",
+        "08_Myser.jpeg": "08_Myser.jpeg",
+        "09_FamiljeSelfie.jpeg": "09_FamiljeSelfie.jpeg",
+        "10_Pappa.jpeg": "10_Pappa.jpeg",
+        "11_FamiljeSelfie.jpeg": "11_FamiljeSelfie.jpeg"
+      }
+    },
+    {
+      "name": "ForstaManaden",
+      "description": "ForstaManaden",
+      "path": "./ForstaManaden/",
+      "images": {
+        "01_Bada.jpg": "01_Bada.jpg",
+        "02_Mormor.jpg": "02_Mormor.jpg",
+        "03_MosterMorfar.jpeg": "03_MosterMorfar.jpeg",
+        "04_Mamma.jpeg": "04_Mamma.jpeg",
+        "05_Poserar.jpeg": "05_Poserar.jpeg",
+        "06_Pappa.jpeg": "06_Pappa.jpeg",
+        "07_Morbror.jpeg": "07_Morbror.jpeg",
+        "08_Babyswap.jpeg": "08_Babyswap.jpeg",
+        "09_Hallo.jpeg": "09_Hallo.jpeg",
+        "10_Farmor.jpeg": "10_Farmor.jpeg",
+        "11_Myser.jpeg": "11_Myser.jpeg",
+        "12_Mostrar.jpeg": "12_Mostrar.jpeg",
+        "13_Pappa.jpeg": "13_Pappa.jpeg",
+        "14_BatmanSelfie.jpeg": "14_BatmanSelfie.jpeg",
+        "15_Mamma.jpeg": "15_Mamma.jpeg",
+        "16_Mamma.jpeg": "16_Mamma.jpeg",
+        "17_Mamma.jpeg": "17_Mamma.jpeg",
+        "18_MammaSelfie.jpeg": "18_MammaSelfie.jpeg",
+        "19_MammaSelfie.jpeg": "19_MammaSelfie.jpeg",
+        "20_MammaSelfie.jpeg": "20_MammaSelfie.jpeg",
+        "21_Nappen.jpeg": "21_Nappen.jpeg",
+        "22_Omnom.jpeg": "22_Omnom.jpeg",
+        "23_kusiner.jpeg": "23_kusiner.jpeg",
+        "24_Farmor.jpeg": "24_Farmor.jpeg",
+        "25_Nacktraning.jpeg": "25_Nacktraning.jpeg",
+        "26_AE.jpeg": "26_AE.jpeg",
+        "27_Bjorn.jpeg": "27_Bjorn.jpeg"
+      }
+    }
+  ]
 }
