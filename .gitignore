@@ -27,4 +27,4 @@ yarn-error.log*
 /src/images*
 
 #dataStructure
-/src/dataStructure.json
+/src/dataStructure.json*
