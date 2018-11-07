@@ -23,8 +23,8 @@ yarn-error.log*
 #token
 /src/token.json
 
+#dataStructure
+/src/dataStructure.json
+
 #images
 /src/images*
-
-#dataStructure
-/src/dataStructure.json*
