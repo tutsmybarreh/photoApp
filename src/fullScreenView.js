@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
-import Chip from '@material-ui/core/Chip';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 class FullscreenView extends Component{
     render(){
@@ -12,13 +14,22 @@ class FullscreenView extends Component{
                     fullScreen
                     open={this.props.fullscreenView}
                     >
-                    {this.props.fullscreenTextOn ? (
-                        <Chip style={{position:'fixed',backgroundColor: '#ffffff',top:10,left:10}}
-                            label={this.props.fullscreenText}
-                            onDelete={()=>this.props.toggleText()}
-                            variant='outlined'
-                            />
-                    ):''}
+                    <Snackbar
+                        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                        open={this.props.fullscreenTextOn}
+                        onClose={this.props.toggleText()}
+                        message={<span id="message-id">{this.props.fullscreenText}</span>}
+                        action={[
+                            <IconButton
+                                key="close"
+                                aria-label="Close"
+                                color="inherit"
+                                onClick={this.props.toggleText()}
+                                >
+                                <CloseIcon />
+                            </IconButton>,
+                        ]}
+                        />
                     <div className='photoCardFull'>
                         <img src={this.props.fullscreenImage} className='pictureFullScreen' alt=''/>
                     </div>

@@ -135,6 +135,7 @@ class App extends Component {
                 collection:false,
             });
         }
+        window.scrollTo(0,0);
     }
 
     getView(){
@@ -260,7 +261,7 @@ class App extends Component {
                         fullscreenImage={this.state.fullscreenImage}
                         fullscreenText={this.state.fullscreenText}
                         fullscreenTextOn={this.state.fullscreenTextOn}
-                        toggleText={this.toggleText.bind(this)}
+                        toggleText={()=>this.toggleText.bind(this)}
                         />
                 </div>
             </div>
