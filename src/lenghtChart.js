@@ -20,7 +20,8 @@ class LenghtChart extends Component {
                 [new Date('2018-10-08'), 52.5],
                 [new Date('2018-10-22'), 54.5],
                 [new Date('2018-10-31'), 55.5],
-                [new Date('2018-11-05'), 56.0],
+                [new Date('2018-11-05'), 56.1],
+                [new Date('2018-11-23'), 57.5],
             ]}
             options={{
                 pointSize: 5,
