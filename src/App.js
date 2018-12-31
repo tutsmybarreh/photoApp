@@ -8,6 +8,8 @@ import filestructure from './dataStructure.json';
 import token from './token.json';
 import hash from 'crypto-js/sha256';
 
+var localStorageTime = 43200000;
+
 class App extends Component {
     constructor(props){
         super(props);
@@ -23,12 +25,16 @@ class App extends Component {
             fullscreenText:"",
             fullscreenTextOn:true,
             storeState: true,
+            timestamp:new Date().getTime(),
         }
         this.handleScroll = this.handleScroll.bind(this);
     }
 
     componentDidMount() {
+        console.log(this.state)
+        if(iOS()){
         this.loadState();
+        }
         this.setState({
             filestructure:filestructure.folders,
         });
@@ -40,7 +46,9 @@ class App extends Component {
     }
 
     componentDidUpdate(){
-        this.saveState();
+        if(iOS()){
+            this.saveState();
+        }
     }
 
     saveState(){
@@ -52,16 +60,20 @@ class App extends Component {
     }
 
     loadState(){
-        for (let key in this.state) {
-            if (localStorage.hasOwnProperty(key)) {
-                try {
-                    this.setState({
-                        [key]: JSON.parse(localStorage.getItem(key)),
-                    });
-                } catch (e) {
-                    this.setState({
-                        [key]: localStorage.getItem(key),
-                    });
+        let currentDate = new Date(this.state.timestamp);
+        let localStorageDate = new Date(parseInt(localStorage['timestamp'], 10));
+        if (currentDate.getTime() - localStorageDate.getTime() < localStorageTime){
+            for (let key in this.state) {
+                if (localStorage.hasOwnProperty(key)) {
+                    try {
+                        this.setState({
+                            [key]: JSON.parse(localStorage.getItem(key)),
+                        });
+                    } catch (e) {
+                        this.setState({
+                            [key]: localStorage.getItem(key),
+                        });
+                    }
                 }
             }
         }
@@ -176,8 +188,12 @@ class App extends Component {
             this.setState({
                 auth:true,
                 pin:"",
-                storeState:true,
             });
+            if (iOS()){
+                this.setState({
+                    storeState:true,
+                });
+            }
         }
     }
 
@@ -267,6 +283,25 @@ class App extends Component {
             </div>
         );
     }
+}
+
+function iOS() {
+  var iDevices = [
+    // 'MacIntel',
+    'iPad Simulator',
+    'iPhone Simulator',
+    'iPod Simulator',
+    'iPad',
+    'iPhone',
+    'iPod'
+  ];
+
+  if (!!navigator.platform) {
+    while (iDevices.length) {
+      if (navigator.platform === iDevices.pop()){return true; }
+    }
+  }
+  return false;
 }
 
 export default App;
