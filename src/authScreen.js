@@ -7,7 +7,7 @@ import DefaultScreen from'./defaultScreen.js';
 
 class AuthScreen extends Component {
     render(){
-        let style = {backgroundColor: '#ffffff', color: '#000000'};
+        let style = {backgroundColor: '#ffffff', color: '#000000', height: 60, width: 60};
         return(
             <div>
             {this.props.isAuth ? (
