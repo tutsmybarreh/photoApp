@@ -31,7 +31,6 @@ class App extends Component {
     }
 
     componentDidMount() {
-        console.log(this.state)
         if(iOS()){
         this.loadState();
         }

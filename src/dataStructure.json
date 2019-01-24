@@ -87,6 +87,42 @@
         "Hälsar på kompisarna Alex och Elvira.": "26_AE.jpeg",
         "Provar din björndräkt, lite stor kanske?": "27_Bjorn.jpeg"
       }
+    },
+    {
+      "name": "November",
+      "description": "Första månaden som mamma fick vara ensam hemma med dig då pappa gick tillbaka till jobbet.",
+      "path": "./november/",
+      "images": {
+        "Hänger med tvillingarna Wille och Lowe!": "01_kompisar.jpeg",
+        "Firar Halloween hos Marcus och Rebecca Wulfing.": "02_Halloween.jpeg",
+        "En av de första dagarna som du fick hänga själv med mamma!": "03_hangersjalva.jpeg",
+        "Superglad för ditt nya babygym som du fått låna av Wilma.": "04_Babygym.jpeg",
+        "Mamma hade en supermysig månad med dig i november!": "04_FinNovember.jpeg",
+        "Supersöt i din nya mössa!": "05_ProvarMossa.jpeg",
+        "Mummu alltid glad att få träffa dig!": "06_momohalsarpa.jpg",
+        "Du börjar bli stadigare i nacken.": "07_nacken.jpeg",
+        "Inte så mycket längre än såhär som du gillade att ligga på pappas bröst tyvärr :(": "08_pappamysigfortf.jpeg"
+      }
+    },
+    {
+      "name": "December",
+      "description": "I december gjorde vi massor av roliga saker så som jul- och nyårsfirande.",
+      "path": "./december/",
+      "images": {
+        "Superfin i din klänning du skall ha på dig på din moster Lauras födelsedagskalas!": "01_klanningkalas.jpeg",
+        "Även fin i denna klänning som vi fick av Melina och Jenny.": "02_nyklanning.jpeg",
+        "Poserar inför julkort.": "03_julkort.jpeg",
+        "Sover i dina Nike-mjukisar som vi köpte till dig i New York.": "04_mjukis.jpeg",
+        "A-L, Jocke och lilla Melker hälsar på.": "05_kompis.jpg",
+        "Dags för din första julafton.": "06_julafton.jpeg",
+        "Hänger med farfar.": "07_julafton.jpeg",
+        "Du växer mycket under mellandagarna, blir stadigare på huvudet samt mycket tyngre! :)": "08_mellandagar.jpeg",
+        "Sitter själv i soffan, inga problem.": "09_sitter.jpeg",
+        "I början tyckte du inte om blöjbyten särskilt mycket, men nu är du oftast superglad! Det var ungefär vid denna tid som du började skratta.": "10_byte.jpeg",
+        "Nyårsfirande med grannarna Malin, Niklas och Eskil.": "11_nyar.jpeg",
+        "Ni ligger på golvet och leker med heliumballonger som är superroliga, Eskil visar hur man gör.": "12_nyar.jpeg",
+        "Hela familjen!": "13_nyar.jpeg"
+      }
     }
   ]
 }
