@@ -29,6 +29,8 @@ class WeightChart extends Component {
                 [new Date('2018-12-20'), 5.960],
                 [new Date('2018-12-30'), 6.400],
                 [new Date('2019-01-24'), 6.720],
+                [new Date('2019-02-05'), 7.020],
+
             ]}
             options={{
                 pointSize: 5,
