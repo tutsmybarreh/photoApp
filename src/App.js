@@ -18,7 +18,6 @@ class App extends Component {
             filestructure:null,
             auth:false,            //Auth with PIN
             collection:null,
-            pin:"",
             fixedNav: false,
             fullscreenView: false,
             fullscreenImage:"",
@@ -165,27 +164,11 @@ class App extends Component {
         else return false;
     }
 
-    pinAddNumber(number){
-        this.setState({
-            pin:this.state.pin+number,
-        });
-    }
-
-    clearPin(){
-        this.setState({
-            pin:"",
-        });
-    }
-
-    enterPin(){
-        let hashed = hash(this.state.pin).toString().toLowerCase();
-        this.setState({
-            pin:"",
-        });
+    enterPin(pin){
+        let hashed = hash(pin).toString().toLowerCase();
         if (hashed===token.token.toLowerCase()){
             this.setState({
                 auth:true,
-                pin:"",
             });
             if (iOS()){
                 this.setState({
@@ -246,9 +229,6 @@ class App extends Component {
                         getCollections={this.getCollections.bind(this)}
                         getView={this.getView.bind(this)}
                         isAuth={this.isAuth.bind(this)}
-                        pin={this.state.pin}
-                        pinAddNumber={this.pinAddNumber.bind(this)}
-                        clearPin={this.clearPin.bind(this)}
                         enterPin={this.enterPin.bind(this)}
                         toggleFullScreen={this.toggleFullScreen.bind(this)}
                         />

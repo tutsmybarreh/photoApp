@@ -1,87 +1,85 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import DefaultScreen from'./defaultScreen.js';
 
-class AuthScreen extends Component {
-    render(){
-        let style = {backgroundColor: '#ffffff', color: '#000000', height: 60, width: 60};
-        return(
-            <div>
-            {this.props.isAuth ? (
+let style = {backgroundColor: '#ffffff', color: '#000000', height: 60, width: 60};
+
+function AuthScreen(props){
+    const [pinCode, updateCode] = useState("");
+    function keyPress(key){
+        updateCode(pinCode+key)
+    }
+    function sendPin(input){
+        if(input){
+            props.enterPin(pinCode)
+            updateCode("")
+        }
+        else{
+            updateCode("")
+        }
+    }
+
+    return(
+        <div>
+            {props.isAuth ? (
                 <DefaultScreen />
             ):(
                 <div>
                     <Typography style={{color: '000000'}} variant="headline" align='center'>
-                        {this.props.pin === "" ? "Lösenkod": this.props.pin}
+                        {pinCode === "" ? "Lösenkod": pinCode}
                     </Typography>
-
-                <div className='PadContainer'>
-                <div className='NumberPad'>
-
-                    <Grid container spacing={32}>
-                        <Grid item xs={12} container spacing={0} alignItems='center'>
-                            <Grid item xs={4} align="center">
-                                <IconButton style={style} onClick={()=>this.props.pinAddNumber("1")}>1</IconButton>
+                    <div className='PadContainer'>
+                        <div className='NumberPad'>
+                            <Grid container spacing={32}>
+                                <Grid item xs={12} container spacing={0} alignItems='center'>
+                                    <Key input={1} keyPress={()=>keyPress("1")}/>
+                                    <Key input={2} keyPress={()=>keyPress("2")}/>
+                                    <Key input={3} keyPress={()=>keyPress("3")}/>
+                                </Grid>
+                                <Grid item xs={12} container spacing={0} alignItems='center'>
+                                    <Key input={4} keyPress={()=>keyPress("4")}/>
+                                    <Key input={5} keyPress={()=>keyPress("5")}/>
+                                    <Key input={6} keyPress={()=>keyPress("6")}/>
+                                </Grid>
+                                <Grid item xs={12} container spacing={0} alignItems='center'>
+                                    <Key input={7} keyPress={()=>keyPress("7")}/>
+                                    <Key input={8} keyPress={()=>keyPress("8")}/>
+                                    <Key input={9} keyPress={()=>keyPress("9")}/>
+                                </Grid>
+                                <Grid item xs={12} container spacing={0} alignItems='center'>
+                                    <KeyIcon icon={"clear"} sendPin={()=>sendPin()} />
+                                    <Key input={0} keyPress={()=>keyPress("0")}/>
+                                    <KeyIcon icon={"keyboard_return"} sendPin={()=>sendPin(true)} />
+                                </Grid>
                             </Grid>
-                            <Grid item xs={4} align="center">
-                                <IconButton style={style} onClick={()=>this.props.pinAddNumber("2")}>2</IconButton>
-                            </Grid>
-                            <Grid item xs={4} align="center">
-                                <IconButton style={style} onClick={()=>this.props.pinAddNumber("3")}>3</IconButton>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={12} container spacing={0} alignItems='center'>
-                            <Grid item xs={4} align="center">
-                                <IconButton style={style} onClick={()=>this.props.pinAddNumber("4")}>4</IconButton>
-                            </Grid>
-                            <Grid item xs={4} align="center">
-                                <IconButton style={style} onClick={()=>this.props.pinAddNumber("5")}>5</IconButton>
-                            </Grid>
-                            <Grid item xs={4} align="center">
-                                <IconButton style={style} onClick={()=>this.props.pinAddNumber("6")}>6</IconButton>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={12} container spacing={0} alignItems='center'>
-                            <Grid item xs={4} align="center">
-                                <IconButton style={style} onClick={()=>this.props.pinAddNumber("7")}>7</IconButton>
-                            </Grid>
-                            <Grid item xs={4} align="center">
-                                <IconButton style={style} onClick={()=>this.props.pinAddNumber("8")}>8</IconButton>
-                            </Grid>
-                            <Grid item xs={4} align="center">
-                                <IconButton style={style} onClick={()=>this.props.pinAddNumber("9")}>9</IconButton>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={12} container spacing={0} alignItems='center'>
-                            <Grid item xs={4} align="center">
-                                <IconButton style={style} onClick={()=>this.props.clearPin()}>
-                                    <Icon>clear</Icon>
-                                </IconButton>
-                            </Grid>
-                            <Grid item xs={4} align="center">
-                                <IconButton style={style} onClick={()=>this.props.pinAddNumber("0")}>0</IconButton>
-                            </Grid>
-                            <Grid item xs={4} align="center">
-                                <IconButton style={style} onClick={()=>this.props.enterPin()}>
-                                    <Icon>keyboard_return</Icon>
-                                </IconButton>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </div>
-                </div>
+                        </div>
+                    </div>
                 </div>
             )
-            }
-            </div>
-        );
-    }
+        }
+    </div>
+);
+}
+
+function Key(props, value){
+    return(
+        <Grid item xs={4} align="center">
+            <IconButton style={style} onClick={()=>props.keyPress(value)}>{props.input}</IconButton>
+        </Grid>
+    );
+}
+
+function KeyIcon(props, value){
+    return(
+        <Grid item xs={4} align="center">
+            <IconButton style={style} onClick={()=>props.sendPin(value)}>
+                <Icon>{props.icon}</Icon>
+            </IconButton>
+        </Grid>
+    );
 }
 
 export default AuthScreen;
