@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Navbar from "./navbar.js";
 import Menu from "./menu.js";
 import './App.css';
-import Dashboard from'./dashboard.js'
+import CollectionView from'./collectionView.js';
+import AuthScreen from'./authScreen.js';
 import FullscreenView from'./fullScreenView.js'
 import filestructure from './dataStructure.json';
 import token from './token.json';
@@ -147,21 +148,10 @@ class App extends Component {
         window.scrollTo(0,0);
     }
 
-    getView(){
-        return this.state.collection;
-    }
-
     clearView(){
         this.setState({
             collection:null,
         });
-    }
-
-    isAuth(){
-        if (this.state.auth){
-            return true;
-        }
-        else return false;
     }
 
     enterPin(pin){
@@ -219,19 +209,23 @@ class App extends Component {
                         menutoggle={this.state.menutoggle}
                         fixedNav={this.state.fixedNav}
                         toggleMenu={()=>this.toggleMenu()}
-                        isAuth={this.isAuth.bind(this)}
+                        isAuth={this.state.auth}
                         clearView={()=>this.clearView()}
                         endSession={()=>this.endSession()}
                         />
                 </div>
                 <div className='dashpadding'>
-                    <Dashboard
-                        getCollections={this.getCollections.bind(this)}
-                        getView={this.getView.bind(this)}
-                        isAuth={this.isAuth.bind(this)}
-                        enterPin={this.enterPin.bind(this)}
+                    {this.state.collection && this.state.auth ? (
+                        <CollectionView
+                        collection={this.getCollections(this.state.collection)}
                         toggleFullScreen={this.toggleFullScreen.bind(this)}
                         />
+                    ) : (
+                        <AuthScreen
+                        isAuth={this.state.auth}
+                        enterPin={this.enterPin.bind(this)}
+                        />
+                    )}
                 </div>
                 <div>
                     <FullscreenView

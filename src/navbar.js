@@ -7,7 +7,7 @@ import Icon from '@material-ui/core/Icon';
 
 function Navbar(props){
     let color = '#ffffff';
-    if (props.isAuth())(
+    if (props.isAuth)(
         color = '#3366ff'
     )
     return(

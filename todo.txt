@@ -1,9 +1,8 @@
--Landscape overflow on Authscreen
-
 Maybe:
--Application for uppload and administration
--Function for numpad in authScreen.js
--Migrate images from application to backend
+-Application for uppload and administration (Maybe use firebase?)
+-Migrate images from application to backend (Maybe use firebase?)
+
+-Landscape overflow on Authscreen
 -DefaultScreen External Data File
 -Style up CollectionView picture frame
 -Remove divider in between "Album" and collections menu.js??
