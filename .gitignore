@@ -23,6 +23,9 @@ yarn-error.log*
 #token
 /src/token.json
 
+#firebasehandler
+/src/firebase.js
+
 #dataStructure
 /src/dataStructure.json
 

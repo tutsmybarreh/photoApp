@@ -28,21 +28,22 @@ function DefaultScreen(props){
             <Typography variant="subheading" align='center' paragraph={true}>
                 {tildeBorn.toJSON().slice(0,10).replace(/-/g,'-')}
             </Typography>
-            <Typography align='center' gutterBottom={true}>
+            <Typography align='center' paragraph={true}>
                 Jag föddes klockan <b>11:34</b> måndagen den 24 september för <b>{daysAge}</b> dagar sen.
             </Typography>
             <Typography align='center' paragraph={true}>
                 Idag är jag <b>{years}</b> år, <b>{months}</b> månader och <b>{days}</b> dagar gammal.
             </Typography>
 
-            <WeightChart />
-            <Typography align='center' paragraph={true}>
+            <Typography align='center'>
                 Vid min födsel vägde jag <b>3970</b> gram.
             </Typography>
-            <LenghtChart />
-            <Typography align='center' gutterBottom={true}>
+            <WeightChart />
+
+            <Typography align='center'>
                 Jag var <b>52</b> centimeter lång.
             </Typography>
+            <LenghtChart />
         </div>
     );
 }

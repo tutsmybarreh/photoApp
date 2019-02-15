@@ -88,3 +88,16 @@ body{
   width:100%;
   object-fit:contain;
 }
+
+/* adminLogin.js */
+.loginContainer{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.AdminInputField {
+  width:200px;
+  margin:auto;
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import Chart from 'react-google-charts';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 function LenghtChart(props){
     return(
@@ -9,7 +10,7 @@ function LenghtChart(props){
         <Chart
         height={'400px'}
         chartType="LineChart"
-        loader={<div>Loading Chart</div>}
+        loader={<LinearProgress />}
         data={[
             [
                 { type: 'date', label: 'Datum' },

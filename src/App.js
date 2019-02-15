@@ -8,6 +8,7 @@ import FullscreenView from'./fullScreenView.js'
 import filestructure from './dataStructure.json';
 import token from './token.json';
 import hash from 'crypto-js/sha256';
+import firebase from './firebase.js';
 
 var localStorageTime = 43200000;
 
@@ -25,6 +26,8 @@ class App extends Component {
             fullscreenText:"",
             storeState: true,
             timestamp:new Date().getTime(),
+            editor:false,
+            firebaseUser:null,
         }
         this.handleScroll = this.handleScroll.bind(this);
     }
@@ -37,6 +40,17 @@ class App extends Component {
             filestructure:filestructure.folders,
         });
         window.addEventListener('scroll', this.handleScroll);
+        firebase.auth.onAuthStateChanged(firebaseUser=>{
+            this.setState({
+                firebaseUser:firebaseUser,
+            })
+            if (firebaseUser){
+                this.setState({
+                    auth:true,
+                    editor:false,
+                })
+            }
+        })
     }
 
     componentWillUnmount() {
@@ -52,7 +66,9 @@ class App extends Component {
     saveState(){
         if (this.state.storeState){
             for (let key in this.state) {
+                if (key!=='firebaseUser'){
                 localStorage.setItem(key, JSON.stringify(this.state[key]));
+                }
             }
         }
     }
@@ -185,6 +201,22 @@ class App extends Component {
         }
     }
 
+    toggleEditor(){
+        this.setState({
+            editor:!this.state.editor,
+            collection:false,
+        })
+    }
+
+    loginAdmin(mail, password){
+        const login = firebase.auth.signInWithEmailAndPassword(mail, password);
+        login.catch(e => console.log(e.message));
+    }
+
+    logoutAdmin(){
+        firebase.auth.signOut();
+    }
+
     endSession(){
         this.setState({
             auth:false,
@@ -212,6 +244,9 @@ class App extends Component {
                         isAuth={this.state.auth}
                         clearView={()=>this.clearView()}
                         endSession={()=>this.endSession()}
+                        toggleEditor={()=>this.toggleEditor()}
+                        firebaseUser={this.state.firebaseUser}
+                        logoutAdmin={this.logoutAdmin.bind(this)}
                         />
                 </div>
                 <div className='dashpadding'>
@@ -223,7 +258,11 @@ class App extends Component {
                     ) : (
                         <AuthScreen
                         isAuth={this.state.auth}
+                        isEditor={this.state.editor}
                         enterPin={this.enterPin.bind(this)}
+                        loginAdmin={this.loginAdmin.bind(this)}
+                        firebaseUser={this.state.firebaseUser}
+                        logoutAdmin={this.logoutAdmin.bind(this)}
                         />
                     )}
                 </div>
@@ -242,7 +281,7 @@ class App extends Component {
 
 function iOS() {
   var iDevices = [
-    // 'MacIntel',
+     // 'MacIntel',
     'iPad Simulator',
     'iPhone Simulator',
     'iPod Simulator',
