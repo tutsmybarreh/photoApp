@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
+import './App.css';
+
 import Navbar from "./navbar.js";
 import Menu from "./menu.js";
-import './App.css';
 import CollectionView from'./collectionView.js';
 import AuthScreen from'./authScreen.js';
 import FullscreenView from'./fullScreenView.js'
+import DefaultScreen from'./defaultScreen.js';
+import AdminLogin from './adminLogin.js';
+
 import filestructure from './dataStructure.json';
 import token from './token.json';
 import hash from 'crypto-js/sha256';
@@ -250,21 +254,22 @@ class App extends Component {
                         />
                 </div>
                 <div className='dashpadding'>
-                    {this.state.collection && this.state.auth ? (
+                    {this.state.collection && this.state.auth ?
                         <CollectionView
-                        collection={this.getCollections(this.state.collection)}
-                        toggleFullScreen={this.toggleFullScreen.bind(this)}
-                        />
-                    ) : (
-                        <AuthScreen
-                        isAuth={this.state.auth}
-                        isEditor={this.state.editor}
-                        enterPin={this.enterPin.bind(this)}
-                        loginAdmin={this.loginAdmin.bind(this)}
-                        firebaseUser={this.state.firebaseUser}
-                        logoutAdmin={this.logoutAdmin.bind(this)}
-                        />
-                    )}
+                            collection={this.getCollections(this.state.collection)}
+                            toggleFullScreen={this.toggleFullScreen.bind(this)}
+                            />
+                    :!this.state.collection && this.state.auth ?
+                        <DefaultScreen />
+                    :this.state.editor ?
+                        <AdminLogin
+                            loginAdmin={this.loginAdmin.bind(this)}
+                            firebaseUser={this.state.firebaseUser}
+                            logoutAdmin={this.logoutAdmin.bind(this)}
+                            />
+                        :
+                        <AuthScreen enterPin={this.enterPin.bind(this)}/>
+                    }
                 </div>
                 <div>
                     <FullscreenView
