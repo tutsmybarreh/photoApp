@@ -32,6 +32,8 @@ class App extends Component {
             timestamp:new Date().getTime(),
             editor:false,
             firebaseUser:null,
+            weight:null,
+            height:null,
         }
         this.handleScroll = this.handleScroll.bind(this);
     }
@@ -55,6 +57,7 @@ class App extends Component {
                 })
             }
         })
+        this.reloadData();
     }
 
     componentWillUnmount() {
@@ -95,6 +98,53 @@ class App extends Component {
                 }
             }
         }
+    }
+
+    reloadData(){
+        this.loadChart('heightChart');
+        this.loadChart('weightChart');
+    }
+
+    async loadChart(name){
+        let chartData = firebase.db.collection(name);
+        let dataMap = [];
+        await chartData.get().then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                let date = Object(doc.data()).date.toDate();
+                let fieldName = Object.keys(doc.data())[1];
+                let value = Object(doc.data())[fieldName];
+                dataMap.push([date, value]);
+            });
+        });
+        let returnValue =  dataMap.sort((a, b)=> {return new Date(a[0]) - new Date(b[0])});
+        if (name==='heightChart'){
+            this.setState({
+                height: returnValue,
+            });
+        }
+        if (name==='weightChart'){
+            this.setState({
+                weight: returnValue,
+            });
+        }
+    }
+
+    updateChart(name, dateValue, value){
+        let collectionName = 'heightChart'
+        let measure = 'height'
+        if (name==='vikt'){
+            collectionName = 'weightChart'
+            measure = 'weight'
+        }
+        let collection = firebase.db.collection(collectionName);
+        collection.add({
+        date: dateValue,
+        [measure]: value,
+        })
+        .then(this.reloadData())
+        .catch(function(error) {
+            console.error("Error adding document: ", error);
+        });
     }
 
     handleScroll() {
@@ -260,7 +310,12 @@ class App extends Component {
                             toggleFullScreen={this.toggleFullScreen.bind(this)}
                             />
                     :!this.state.collection && this.state.auth ?
-                        <DefaultScreen />
+                        <DefaultScreen
+                            weight={this.state.weight}
+                            height={this.state.height}
+                            firebaseUser={this.state.firebaseUser}
+                            updateChart={this.updateChart.bind(this)}
+                            />
                     :this.state.editor ?
                         <AdminLogin
                             loginAdmin={this.loginAdmin.bind(this)}

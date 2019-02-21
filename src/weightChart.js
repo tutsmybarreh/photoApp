@@ -3,51 +3,51 @@ import Paper from '@material-ui/core/Paper';
 import Chart from 'react-google-charts';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
+let options = {
+    pointSize: 5,
+    legend: 'none',
+    hAxis: {
+        title: 'Datum',
+        format:'yyyy-MM-dd',
+    },
+    vAxis: {
+        title: 'Vikt (kg)',
+    },
+}
+
 function WeightChart(props){
     return(
         <div className='photoCard'>
-        <Paper elevation={1} square={true}>
-        <Chart
-        height={'400px'}
-        chartType="LineChart"
-        loader={<LinearProgress />}
-        data={[
-            [
-                { type: 'date', label: 'Datum' },
-                'kg'
-            ],
-            [new Date('2018-09-24'), 3.970],
-            [new Date('2018-09-28'), 3.500],
-            [new Date('2018-09-29'), 3.620],
-            [new Date('2018-10-01'), 3.756],
-            [new Date('2018-10-04'), 3.870],
-            [new Date('2018-10-08'), 4.000],
-            [new Date('2018-10-22'), 4.550],
-            [new Date('2018-10-31'), 4.760],
-            [new Date('2018-11-05'), 4.900],
-            [new Date('2018-11-23'), 5.350],
-            [new Date('2018-12-20'), 5.960],
-            [new Date('2018-12-30'), 6.400],
-            [new Date('2019-01-24'), 6.720],
-            [new Date('2019-02-05'), 7.020],
-
-        ]}
-        options={{
-            pointSize: 5,
-            legend: 'none',
-            hAxis: {
-                title: 'Datum',
-                format:'yyyy-MM-dd',
-            },
-            vAxis: {
-                title: 'Vikt (kg)',
-            },
-        }}
-        rootProps={{ 'data-testid': '1' }}
-        />
+            <Paper elevation={1} square={true}>
+                {props.weight ? (
+                    <Chart
+                        height={'400px'}
+                        chartType="LineChart"
+                        loader={<LinearProgress />}
+                        data={loadData(props.weight)}
+                        options={options}
+                        rootProps={{ 'data-testid': '1' }}
+                        />
+                ):(
+                    <LinearProgress />
+                )
+            }
         </Paper>
-        </div>
-    );
+    </div>
+);
+}
+
+function loadData(datapoints){
+    let data = [[
+        { type: 'date', label: 'Datum' },
+        'kg'
+    ]];
+    datapoints.forEach(
+        function(value){
+            data.push([new Date(value[0]), value[1]])
+        }
+    )
+    return data;
 }
 
 export default WeightChart;

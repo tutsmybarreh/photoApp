@@ -31,3 +31,6 @@ yarn-error.log*
 
 #images
 /src/images*
+
+#todo
+todo.txt
