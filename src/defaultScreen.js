@@ -11,28 +11,48 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 let color = '#3366ff';
 
 function DefaultScreen(props){
+    //Add feature hooks
     const [addMeasurment, toggleMeasurment] = useState("");
-    const [dateHolder, toggleDate] = useState(null);
     const [valueHolder, toggleValue] = useState(null);
+    const [dateHolder, toggleDate] = useState(null);
+    //Remove Feature Hooks
+    const [verifyDelete, deletePromt] = useState(false);
+    const [removeMeasurment, toggleRemove] = useState("");
+    const [targetCollection, toggleTarget] = useState("");
+    const [deleteId, toggleId] = useState(null);
 
     function toggleMeasurmentAndSetHook(input){
         toggleMeasurment(input)
         toggleDate(new Date());
-        if (input==='vikt'){
-            toggleValue(props.weight[props.weight.length-1][1])
-        }
-        if (input==='längd'){
-            toggleValue(props.height[props.height.length-1][1])
-        }
+        toggleValue(props[input][props[input].length-1][1])
     }
 
     function closeDialogUpdateChart(){
-        props.updateChart(addMeasurment, dateHolder, valueHolder);
+        props.updateChart(addMeasurment, dateHolder, parseFloat(valueHolder));
         toggleMeasurment("");
+    }
+
+    function closeDialogRemove(collection, object){
+        //Promt OK
+        toggleRemove("");
+        toggleId(object[2]);
+        toggleTarget(collection);
+        deletePromt(true);
+    }
+
+    function closeDialogReply(reply = false){
+        if (reply){
+            props.deleteFromChart(targetCollection, deleteId)
+        }
+            deletePromt(false);
+            toggleId(null);
+            toggleTarget("");
     }
 
     let currentDate = new Date();
@@ -60,14 +80,14 @@ function DefaultScreen(props){
 
             <Typography align='center'>Vid min födsel vägde jag <b>3970</b> gram.</Typography>
             <WeightChart weight={props.weight} firebaseUser={props.firebaseUser}/>
-            {props.firebaseUser ? editBar(()=>toggleMeasurmentAndSetHook('vikt')):null}
+            {props.firebaseUser ? editBar(()=>toggleMeasurmentAndSetHook('weight'), ()=>toggleRemove('weight')):null}
 
             <Typography align='center'>Jag var <b>52</b> centimeter lång.</Typography>
             <LenghtChart height={props.height} firebaseUser={props.firebaseUser}/>
-            {props.firebaseUser ? editBar(()=>toggleMeasurmentAndSetHook('längd')):null}
+            {props.firebaseUser ? editBar(()=>toggleMeasurmentAndSetHook('height'), ()=>toggleRemove('height')):null}
 
-            <Dialog open={addMeasurment === 'vikt' || addMeasurment === 'längd'} onClose={()=>toggleMeasurment('')}>
-                <DialogTitle id="testing">Lägg till {addMeasurment}</DialogTitle>
+            <Dialog open={addMeasurment === 'weight' || addMeasurment === 'height'} onClose={()=>toggleMeasurment('')}>
+                <DialogTitle id="addMeasure">{addMeasurment === 'weight' ? 'Lägg till vikt': addMeasurment === 'height' ? 'Lägg till längd':''}</DialogTitle>
                 <DialogContent>
                     <List>
                         <ListItem>
@@ -85,7 +105,7 @@ function DefaultScreen(props){
                         <ListItem>
                             <TextField
                                 id="standard-name"
-                                label={addMeasurment.charAt(0).toUpperCase() + addMeasurment.slice(1)}
+                                label={addMeasurment === 'weight' ? 'Vikt (kg)': addMeasurment === 'height' ? 'Längd (cm)':''}
                                 margin="normal"
                                 type="number"
                                 defaultValue={getLatest(props, addMeasurment)}
@@ -103,26 +123,59 @@ function DefaultScreen(props){
                     </ListItem>
                 </DialogContent>
             </Dialog>
-        </div>
-    );
+            <Dialog open={removeMeasurment === 'weight' || removeMeasurment === 'height'} onClose={()=>toggleRemove('')}>
+                <DialogContent>
+                    <List>
+                        {props[removeMeasurment] ? (
+                            props[removeMeasurment].map(
+                                function(value){
+                                    let date = value[0].toJSON().slice(0,10).replace(/-/g,'-');
+                                    let unit = removeMeasurment === 'weight' ? 'kg' : 'cm';
+                                    return <ListItem key={value[2]}>
+                                        <IconButton aria-label="Delete" onClick={()=>closeDialogRemove(removeMeasurment, value)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                        <ListItemText
+                                            primary={date}
+                                            secondary={value[1]+' '+unit}
+                                            />
+                                    </ListItem>;
+                                }
+                            ).reverse()
+                        ):null
+                    }
+                </List>
+            </DialogContent>
+        </Dialog>
+        <Dialog open={verifyDelete} onClose={()=>deletePromt(false)}>
+            <DialogTitle id="approveDelete">Ta bort?</DialogTitle>
+            <DialogContent>
+                <Toolbar>
+                    <IconButton style={{color:color, marginLeft:'auto'}} onClick={()=>closeDialogReply(true)}>
+                        <Icon>check</Icon>
+                    </IconButton>
+                    <IconButton style={{color:color, marginRight:'auto'}} onClick={()=>closeDialogReply()}>
+                        <Icon>close</Icon>
+                    </IconButton>
+                </Toolbar>
+            </DialogContent>
+        </Dialog>
+    </div>
+);
 }
 
 function getLatest(props, sort){
-    if (sort==='vikt' && props.weight){
-        return props.weight[props.weight.length-1][1]
-    }
-    if (sort==='längd' && props.height){
-        return props.height[props.height.length-1][1]
-    }
+    if (props[sort])
+        return props[sort][props[sort].length-1][1]
 }
 
-function editBar(toggle){
+function editBar(toggle, toggleDelete){
     return (
         <Toolbar>
             <IconButton style={{color:color, marginLeft:'auto'}} onClick={toggle}>
                 <Icon>add</Icon>
             </IconButton>
-            <IconButton style={{color:color, marginRight:'auto'}}>
+            <IconButton style={{color:color, marginRight:'auto'}} onClick={toggleDelete}>
                 <Icon>remove</Icon>
             </IconButton>
         </Toolbar>

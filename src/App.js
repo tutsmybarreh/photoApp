@@ -113,7 +113,8 @@ class App extends Component {
                 let date = Object(doc.data()).date.toDate();
                 let fieldName = Object.keys(doc.data())[1];
                 let value = Object(doc.data())[fieldName];
-                dataMap.push([date, value]);
+                let id = doc.id;
+                dataMap.push([date, value, id]);
             });
         });
         let returnValue =  dataMap.sort((a, b)=> {return new Date(a[0]) - new Date(b[0])});
@@ -130,20 +131,24 @@ class App extends Component {
     }
 
     updateChart(name, dateValue, value){
-        let collectionName = 'heightChart'
-        let measure = 'height'
-        if (name==='vikt'){
-            collectionName = 'weightChart'
-            measure = 'weight'
-        }
+        let collectionName = name + 'Chart'
         let collection = firebase.db.collection(collectionName);
         collection.add({
         date: dateValue,
-        [measure]: value,
+        [name]: value,
         })
         .then(this.reloadData())
         .catch(function(error) {
             console.error("Error adding document: ", error);
+        });
+    }
+
+    deleteFromChart(name, id){
+        let collectionName = name + 'Chart';
+        let collection = firebase.db.collection(collectionName).doc(id);
+        collection.delete().then(this.reloadData())
+        .catch(function(error) {
+            console.error("Error removing document: ", error);
         });
     }
 
@@ -315,6 +320,7 @@ class App extends Component {
                             height={this.state.height}
                             firebaseUser={this.state.firebaseUser}
                             updateChart={this.updateChart.bind(this)}
+                            deleteFromChart={this.deleteFromChart.bind(this)}
                             />
                     :this.state.editor ?
                         <AdminLogin
