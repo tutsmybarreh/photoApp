@@ -166,6 +166,12 @@ class App extends Component {
     }
 
     toggleMenu(input){
+        // works
+        // var testImage = firebase.storage.ref('10_byte.jpeg');
+        // testImage.getDownloadURL().then(function(url) {
+        //     window.open(url);
+        // });
+
         if (!input){
             if (this.state.menutoggle){
                 this.setState({

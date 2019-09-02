@@ -6,3 +6,19 @@ Maybe:
 -DefaultScreen External Data File
 -Style up CollectionView picture frame
 -Remove divider in between "Album" and collections menu.js??
+
+AdminHandlers
+  +Add Collection from menu drawer "+"
+      -Creates a folder in storage
+      -Creates a reference object [title, subTitle, path, index, images[]]
+  +Remove Collection from inside collection (only when no images are present)
+      -Removes folder from storage
+      -Removes reference object
+  +Add image "+" at bottom of collection package
+      -Creates an image in storage folders
+      -Creates a reference object in images folder object [description, path, index]
+  +Edit image 'pen' symbol under each image. Options (Update text, or remove)
+      -updateText changes text in reference Object
+      -remove deletes reference object and image from folder
+
+Filestructure
