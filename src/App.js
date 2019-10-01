@@ -24,7 +24,6 @@ class App extends Component {
             filestructure:null,
             auth:false,            //Auth with PIN
             collection:null,
-            fixedNav: false,
             fullscreenView: false,
             fullscreenImage:"",
             fullscreenText:"",
@@ -35,7 +34,6 @@ class App extends Component {
             weight:null,
             height:null,
         }
-        this.handleScroll = this.handleScroll.bind(this);
     }
 
     componentDidMount() {
@@ -45,7 +43,6 @@ class App extends Component {
         this.setState({
             filestructure:filestructure.folders,
         });
-        window.addEventListener('scroll', this.handleScroll);
         firebase.auth.onAuthStateChanged(firebaseUser=>{
             this.setState({
                 firebaseUser:firebaseUser,
@@ -58,10 +55,6 @@ class App extends Component {
             }
         })
         this.reloadData();
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('scroll', this.handleScroll);
     }
 
     componentDidUpdate(){
@@ -103,6 +96,7 @@ class App extends Component {
     reloadData(){
         this.loadChart('heightChart');
         this.loadChart('weightChart');
+        this.loadAlbums();
     }
 
     async loadChart(name){
@@ -130,6 +124,50 @@ class App extends Component {
         }
     }
 
+    async loadAlbums(){
+        let albums = await firebase.db.collection('folders').get().then(
+            (querySnapshot) => {
+                let data = [];
+                querySnapshot.forEach(doc => {
+                    data.push(doc)
+                })
+                return data;
+            }
+        )
+        let filestructure = albums.map(
+            (value) => {
+                let header = value.data();
+                this.loadCollection(value.id).then(
+                    (value) => {
+                        if (Object.entries(value[0]).length !== 0){
+                            header['images'] = value;
+                        }
+                        else {
+                            header['images'] = null;
+                        }
+                    }
+                );
+                return header;
+            }
+        )
+        let existingFileSruct = this.state.filestructure;
+        filestructure.forEach(
+            (value) => {existingFileSruct.push(value)}
+        )
+        this.setState({
+            filestructure: existingFileSruct,
+        });
+    }
+
+    async loadCollection(images) {
+        let collection = await firebase.db.collection('folders').doc(images).collection('images').get();
+        return collection.docs.map(doc => doc.data());
+    }
+
+    getImage(image){
+        return firebase.storage.ref(image).getDownloadURL();
+    }
+
     updateChart(name, dateValue, value){
         let collectionName = name + 'Chart'
         let collection = firebase.db.collection(collectionName);
@@ -152,26 +190,7 @@ class App extends Component {
         });
     }
 
-    handleScroll() {
-        if (window.scrollY > 65 && !this.state.fixedNav) {
-            this.setState({
-                fixedNav: true,
-            });
-        }
-        else if (window.scrollY < 65 && this.state.fixedNav) {
-            this.setState({
-                fixedNav: false,
-            });
-        }
-    }
-
     toggleMenu(input){
-        // works
-        // var testImage = firebase.storage.ref('10_byte.jpeg');
-        // testImage.getDownloadURL().then(function(url) {
-        //     window.open(url);
-        // });
-
         if (!input){
             if (this.state.menutoggle){
                 this.setState({
@@ -200,17 +219,13 @@ class App extends Component {
 
     getCollections(input){
         if(this.state.filestructure){
-            var collections = this.state.filestructure.map(
-                function(value){
-                    return value;
-                }
-            )
             if (input){
-                collections = collections.find(function(value) {
+                return this.state.filestructure.find(function(value) {
                     return value.name === input;
                 })
+            } else {
+                return this.state.filestructure;
             }
-            return collections;
         }
         else return [];
     }
@@ -292,7 +307,7 @@ class App extends Component {
 
     render() {
         return (
-            <div className={this.state.fixedNav ? 'navBarStick':''}>
+            <div className='navBarStick'>
                 <div>
                     <Menu
                         menutoggle={this.state.menutoggle}
@@ -304,7 +319,6 @@ class App extends Component {
                 <div>
                     <Navbar
                         menutoggle={this.state.menutoggle}
-                        fixedNav={this.state.fixedNav}
                         toggleMenu={()=>this.toggleMenu()}
                         isAuth={this.state.auth}
                         clearView={()=>this.clearView()}
@@ -319,6 +333,7 @@ class App extends Component {
                         <CollectionView
                             collection={this.getCollections(this.state.collection)}
                             toggleFullScreen={this.toggleFullScreen.bind(this)}
+                            getImage={this.getImage.bind(this)}
                             />
                     :!this.state.collection && this.state.auth ?
                         <DefaultScreen

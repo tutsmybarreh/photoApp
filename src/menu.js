@@ -31,14 +31,18 @@ function Menu(props){
                     <List>
                         {props.getCollections().map(
                             function (value){
-                                return (
-                                    <ListItem button
-                                        key={value.name}
-                                        onClick={()=>props.selectCollection(value.name)}>
-                                        <ListItemText primary={value.name}
-                                    />
-                                    </ListItem>
-                                );
+                                if (process.env.NODE_ENV === 'production' && value.isTest) {
+                                    return null;
+                                } else {
+                                    return (
+                                        <ListItem button
+                                            key={value.name}
+                                            onClick={()=>props.selectCollection(value.name)}>
+                                            <ListItemText primary={value.name}
+                                        />
+                                        </ListItem>
+                                    );
+                                }
                             }
                         )}
                     </List>

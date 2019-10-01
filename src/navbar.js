@@ -11,7 +11,7 @@ function Navbar(props){
     let color = '#3366ff';
     return(
         <div>
-            <AppBar position={props.fixedNav ? 'fixed' : 'static'}>
+            <AppBar position='fixed'>
                 <Toolbar className='navbarColor'>
                     {props.isAuth ? (
                     <>

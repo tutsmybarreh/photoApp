@@ -23,12 +23,12 @@ function AuthScreen(props){
 
     return(
         <div>
-            <Typography style={{color: '000000'}} variant="headline" align='center'>
+            <Typography style={{color: '000000'}} variant="h5" align='center'>
                 {pinCode === "" ? "Lösenkod": pinCode}
             </Typography>
             <div className='PadContainer'>
                 <div className='NumberPad'>
-                    <Grid container spacing={32}>
+                    <Grid container spacing={5}>
                         <Grid item xs={12} container spacing={0} alignItems='center'>
                             <Key input={1} keyPress={()=>keyPress("1")}/>
                             <Key input={2} keyPress={()=>keyPress("2")}/>

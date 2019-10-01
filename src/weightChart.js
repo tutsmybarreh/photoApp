@@ -16,6 +16,7 @@ let options = {
 }
 
 function WeightChart(props){
+    // console.log(window.gadgets)
     return(
         <div className='photoCard'>
             <Paper elevation={1} square={true}>

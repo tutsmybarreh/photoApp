@@ -37,7 +37,7 @@ function AdminLogin(props){
         </div>
     ) : (
         <div className='loginContainer'>
-        <Typography variant="subheading" align='center' paragraph={true}>
+        <Typography variant="h7" align='center' paragraph={true}>
         Inloggad som <b>{props.firebaseUser.email}</b>
         </Typography>
         <div className='AdminInputField'>
