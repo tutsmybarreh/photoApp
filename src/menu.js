@@ -31,7 +31,7 @@ function Menu(props){
                     <List>
                         {props.getCollections().map(
                             function (value){
-                                if (process.env.NODE_ENV === 'production' && value.isTest) {
+                                if (process.env.NODE_ENV === 'production' && value.isTest){
                                     return null;
                                 } else {
                                     return (

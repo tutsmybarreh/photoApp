@@ -151,7 +151,7 @@ class App extends Component {
             }
         )
         let existingFileSruct = this.state.filestructure;
-        filestructure.forEach(
+        filestructure.sort((a,b) => a.Index - b.Index).forEach(
             (value) => {existingFileSruct.push(value)}
         )
         this.setState({
