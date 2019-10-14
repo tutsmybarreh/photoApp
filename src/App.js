@@ -9,7 +9,7 @@ import FullscreenView from'./fullScreenView.js'
 import DefaultScreen from'./defaultScreen.js';
 import AdminLogin from './adminLogin.js';
 
-import filestructure from './dataStructure.json';
+import oldFilestructure from './dataStructure.json';
 import token from './token.json';
 import hash from 'crypto-js/sha256';
 import firebase from './firebase.js';
@@ -23,7 +23,8 @@ class App extends Component {
             menutoggle:false,
             filestructure:null,
             auth:false,            //Auth with PIN
-            collection:null,
+            collection:null,       //Merge theese two when old stuff is gone?
+            collectionId:null,     //Merge theese two when old stuff is gone?
             fullscreenView: false,
             fullscreenImage:"",
             fullscreenText:"",
@@ -33,6 +34,7 @@ class App extends Component {
             firebaseUser:null,
             weight:null,
             height:null,
+            pictureId:null,
         }
     }
 
@@ -40,9 +42,6 @@ class App extends Component {
         if(iOS()){
         this.loadState();
         }
-        this.setState({
-            filestructure:filestructure.folders,
-        });
         firebase.auth.onAuthStateChanged(firebaseUser=>{
             this.setState({
                 firebaseUser:firebaseUser,
@@ -54,7 +53,8 @@ class App extends Component {
                 })
             }
         })
-        this.reloadData();
+        this.reloadCharts();
+        this.loadAlbums();
     }
 
     componentDidUpdate(){
@@ -93,10 +93,9 @@ class App extends Component {
         }
     }
 
-    reloadData(){
+    reloadCharts(){
         this.loadChart('heightChart');
         this.loadChart('weightChart');
-        this.loadAlbums();
     }
 
     async loadChart(name){
@@ -137,6 +136,7 @@ class App extends Component {
         let filestructure = albums.map(
             (value) => {
                 let header = value.data();
+                header['id']=value.id;
                 this.loadCollection(value.id).then(
                     (value) => {
                         if (Object.entries(value[0]).length !== 0){
@@ -150,7 +150,7 @@ class App extends Component {
                 return header;
             }
         )
-        let existingFileSruct = this.state.filestructure;
+        let existingFileSruct = oldFilestructure.folders;
         filestructure.sort((a,b) => a.Index - b.Index).forEach(
             (value) => {existingFileSruct.push(value)}
         )
@@ -161,11 +161,30 @@ class App extends Component {
 
     async loadCollection(images) {
         let collection = await firebase.db.collection('folders').doc(images).collection('images').get();
-        return collection.docs.map(doc => doc.data());
+        return collection.docs.map((doc)=>{
+            let returnValue = doc.data();
+            returnValue['id']=doc.id;
+            return returnValue;
+        });
     }
 
     getImage(image){
         return firebase.storage.ref(image).getDownloadURL();
+    }
+
+    editImage(text, id){
+        console.log(this.state.collectionId, id, text);
+        let editImage = firebase.db.collection('folders').doc(this.state.collectionId).collection('images').doc(id);
+        editImage.set(
+            {description:text},
+            {merge:true})
+            .then(
+                //Fix Here for proper reload
+                console.log('Refresh To update ^_^')
+            )
+            .catch(function(error) {
+                console.error("Error adding document: ", error);
+            });
     }
 
     updateChart(name, dateValue, value){
@@ -175,7 +194,7 @@ class App extends Component {
         date: dateValue,
         [name]: value,
         })
-        .then(this.reloadData())
+        .then(this.reloadCharts())
         .catch(function(error) {
             console.error("Error adding document: ", error);
         });
@@ -184,7 +203,7 @@ class App extends Component {
     deleteFromChart(name, id){
         let collectionName = name + 'Chart';
         let collection = firebase.db.collection(collectionName).doc(id);
-        collection.delete().then(this.reloadData())
+        collection.delete().then(this.reloadCharts())
         .catch(function(error) {
             console.error("Error removing document: ", error);
         });
@@ -230,10 +249,11 @@ class App extends Component {
         else return [];
     }
 
-    selectCollection(input){
+    selectCollection(input, collectionId){
         if (this.state.auth){
             this.setState({
                 collection:input,
+                collectionId:collectionId,
             });
         }
         else {
@@ -264,7 +284,7 @@ class App extends Component {
         }
     }
 
-    toggleFullScreen(input, text){
+    toggleFullScreen(input, text, id){
         if (this.state.fullscreenView){
             this.setState({
                 fullscreenView:false,
@@ -276,6 +296,7 @@ class App extends Component {
                 fullscreenView:true,
                 fullscreenImage:input,
                 fullscreenText:text,
+                pictureId:id,
             });
             document.getElementsByTagName("Meta").viewport.setAttribute('content', 'viewport-fit=cover, width=device-width, initial-scale=1, maximum-scale=2.0, user-scalable=yes, shrink-to-fit=no')
         }
@@ -334,6 +355,7 @@ class App extends Component {
                             collection={this.getCollections(this.state.collection)}
                             toggleFullScreen={this.toggleFullScreen.bind(this)}
                             getImage={this.getImage.bind(this)}
+                            firebaseUser={this.state.firebaseUser}
                             />
                     :!this.state.collection && this.state.auth ?
                         <DefaultScreen
@@ -359,6 +381,9 @@ class App extends Component {
                         toggleFullScreen={this.toggleFullScreen.bind(this)}
                         fullscreenImage={this.state.fullscreenImage}
                         fullscreenText={this.state.fullscreenText}
+                        pictureId={this.state.pictureId}
+                        isAdmin={this.state.firebaseUser}
+                        editImage={this.editImage.bind(this)}
                         />
                 </div>
             </div>

@@ -1,9 +1,15 @@
-Maybe:
--Application for uppload and administration (Maybe use firebase?)
--Migrate images from application to backend (Maybe use firebase?)
+1. Edit Collection data
+2. Edit Collections
+3. Finish albums in firebase
+4. Remove Old stuff from app.js, collectionView, dataStructureLoad, static Images etc
+5. Add/Remove collections
+6. Add/Remove Collection Data
 
+Other stuff:
 -Landscape overflow on Authscreen
--DefaultScreen External Data File
+-Collection Title stick to navbar on scroll
+-Group collections somehow?
+-Next Collection on scroll to bottom?
 -Style up CollectionView picture frame
 -Remove divider in between "Album" and collections menu.js??
 

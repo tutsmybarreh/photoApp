@@ -37,7 +37,7 @@ function Menu(props){
                                     return (
                                         <ListItem button
                                             key={value.name}
-                                            onClick={()=>props.selectCollection(value.name)}>
+                                            onClick={()=>props.selectCollection(value.name, value.id ? value.id : null)}>
                                             <ListItemText primary={value.name}
                                         />
                                         </ListItem>

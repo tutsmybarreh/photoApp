@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-
+import IconButton from '@material-ui/core/IconButton';
 
 function CollectionView(props) {
     const [albumArray, setAlbum] = useState([]);                //Hook containing new collections
@@ -32,7 +32,7 @@ function CollectionView(props) {
             let image = imagePath(path+images[object]);
             album.push(
                 <div key={object}>
-                    <div className='photoCard' onClick={()=>props.toggleFullScreen(image, object)}>
+                    <div className='photoCard' onClick={()=>props.toggleFullScreen(image, object, null)}>
                         <Paper elevation={1} square={true}>
                             <div className='padderino'>
                                 <div className='polaroid'>
@@ -57,17 +57,17 @@ function CollectionView(props) {
         return (
             <div>
                 {albumArray.sort((a,b)=> a.index-b.index).map(
-                    (value, index)=>{return imageCard(value.url, value.description, index, align)}
+                    (value, index)=>{return imageCard(value.url, value.description, index, value.id, align)}
                 )}
             </div>
     )
     }
 
     //New Stuff
-    function imageCard(path, description, key, align){
+    function imageCard(path, description, key, id, align){
         return (
             <div key={key}>
-                <div className='photoCard' onClick={()=>props.toggleFullScreen(path, description)}>
+                <div className='photoCard' onClick={()=>props.toggleFullScreen(path, description, id)}>
                     <Paper elevation={1} square={true}>
                         <div className='padderino'>
                             <div className='polaroid'>
@@ -98,7 +98,8 @@ function CollectionView(props) {
                          let image = {
                              'index':value.index,
                              'url':url,
-                             'description':value.description
+                             'description':value.description,
+                             'id':value.id
                          }
                          album.push(image);
                          itemsProcessed++;
@@ -113,10 +114,10 @@ function CollectionView(props) {
         )
     }
 
-    let align = 'center';
-    let images = props.collection.images;
-    let path = props.collection.path;
-    let newCollection = typeof props.collection.Index === 'number';
+    let align = 'center';                                                       //REMOVES when FireBase Done
+    let images = props.collection.images;                                       //REMOVES when FireBase Done
+    let path = props.collection.path;                                           //REMOVES when FireBase Done
+    let newCollection = typeof props.collection.Index === 'number';             //REMOVES when FireBase Done
     if (images && newCollection && !albumLoaded && !albumDone){
         firebaseAlbum(images, path);
         setAlbumLoaded(true);
