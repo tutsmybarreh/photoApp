@@ -1,9 +1,11 @@
-1. Edit Collection data
-2. Edit Collections
-3. Finish albums in firebase
-4. Remove Old stuff from app.js, collectionView, dataStructureLoad, static Images etc
-5. Add/Remove collections
-6. Add/Remove Collection Data
+1. Edit Image Caption
+2. Arrange images
+3. Edit Collection data
+4. Arrange Collections
+Finish albums in firebase
+Remove Old stuff from app.js, collectionView, dataStructureLoad, static Images etc
+5. Add/Remove Images
+6. Add/Remove Collections
 
 Other stuff:
 -Landscape overflow on Authscreen

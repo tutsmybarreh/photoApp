@@ -123,7 +123,7 @@ class App extends Component {
         }
     }
 
-    async loadAlbums(){
+    async loadAlbums(reload){
         let albums = await firebase.db.collection('folders').get().then(
             (querySnapshot) => {
                 let data = [];
@@ -150,13 +150,18 @@ class App extends Component {
                 return header;
             }
         )
-        let existingFileSruct = oldFilestructure.folders;
+        let existingFileSruct = [...oldFilestructure.folders];
         filestructure.sort((a,b) => a.Index - b.Index).forEach(
             (value) => {existingFileSruct.push(value)}
         )
         this.setState({
             filestructure: existingFileSruct,
         });
+        if (reload){
+            this.setState({
+                collection:reload,
+            });
+        }
     }
 
     async loadCollection(images) {
@@ -173,14 +178,17 @@ class App extends Component {
     }
 
     editImage(text, id){
-        console.log(this.state.collectionId, id, text);
+        //2Fix: collection needs to be nulled, in order to force update onto collectionView
+        this.setState({
+            fullscreenText:text,
+            collection:null,
+        });
         let editImage = firebase.db.collection('folders').doc(this.state.collectionId).collection('images').doc(id);
         editImage.set(
             {description:text},
             {merge:true})
             .then(
-                //Fix Here for proper reload
-                console.log('Refresh To update ^_^')
+                this.loadAlbums(this.state.collection)
             )
             .catch(function(error) {
                 console.error("Error adding document: ", error);

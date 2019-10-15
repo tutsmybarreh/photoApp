@@ -17,7 +17,6 @@ let color = '#3366ff';
 function FullscreenView(props){
     const [showText, toggleText] = useState(true);
     const [editText, toggleEdit] = useState(false);
-    const [currentText, c] = useState([]);
 
     function sendAndClose(){
         props.editImage(document.getElementById('Beskrivning').value, props.pictureId);

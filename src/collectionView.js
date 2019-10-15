@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import IconButton from '@material-ui/core/IconButton';
+// import IconButton from '@material-ui/core/IconButton';
 
 function CollectionView(props) {
     const [albumArray, setAlbum] = useState([]);                //Hook containing new collections
