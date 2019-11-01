@@ -14,8 +14,6 @@ import token from './token.json';
 import hash from 'crypto-js/sha256';
 import firebase from './firebase.js';
 
-var localStorageTime = 43200000;
-
 class App extends Component {
     constructor(props){
         super(props);
@@ -28,20 +26,18 @@ class App extends Component {
             fullscreenView: false,
             fullscreenImage:"",
             fullscreenText:"",
-            storeState: true,
-            timestamp:new Date().getTime(),
+            fullScreenIndex:null,
+            fullscreenSize:null,
             editor:false,
             firebaseUser:null,
             weight:null,
             height:null,
             pictureId:null,
+            scrollTo:null,
         }
     }
 
     componentDidMount() {
-        if(iOS()){
-        this.loadState();
-        }
         firebase.auth.onAuthStateChanged(firebaseUser=>{
             this.setState({
                 firebaseUser:firebaseUser,
@@ -55,42 +51,6 @@ class App extends Component {
         })
         this.reloadCharts();
         this.loadAlbums();
-    }
-
-    componentDidUpdate(){
-        if(iOS()){
-            this.saveState();
-        }
-    }
-
-    saveState(){
-        if (this.state.storeState){
-            for (let key in this.state) {
-                if (key!=='firebaseUser'){
-                localStorage.setItem(key, JSON.stringify(this.state[key]));
-                }
-            }
-        }
-    }
-
-    loadState(){
-        let currentDate = new Date(this.state.timestamp);
-        let localStorageDate = new Date(parseInt(localStorage['timestamp'], 10));
-        if (currentDate.getTime() - localStorageDate.getTime() < localStorageTime){
-            for (let key in this.state) {
-                if (localStorage.hasOwnProperty(key)) {
-                    try {
-                        this.setState({
-                            [key]: JSON.parse(localStorage.getItem(key)),
-                        });
-                    } catch (e) {
-                        this.setState({
-                            [key]: localStorage.getItem(key),
-                        });
-                    }
-                }
-            }
-        }
     }
 
     reloadCharts(){
@@ -123,7 +83,7 @@ class App extends Component {
         }
     }
 
-    async loadAlbums(reload){
+    async loadAlbums(reload, scrollValue){
         let albums = await firebase.db.collection('folders').get().then(
             (querySnapshot) => {
                 let data = [];
@@ -161,6 +121,7 @@ class App extends Component {
             this.setState({
                 collection:reload,
             });
+            // window.scrollTo(0, scrollValue)
         }
     }
 
@@ -177,30 +138,83 @@ class App extends Component {
         return firebase.storage.ref(image).getDownloadURL();
     }
 
-    editImage(text, id){
+    editImage(text, id, index=null){
         //2Fix: collection needs to be nulled, in order to force update onto collectionView
+        let shuffleIndex = index===null ? index : this.makeShuffleArray(index);
+        const saveCollection = this.state.collection;
         this.setState({
+            scrollTo:window.scrollY,
             fullscreenText:text,
             collection:null,
+            fullScreenIndex: index!==null ? index : this.state.fullScreenIndex,
         });
         let editImage = firebase.db.collection('folders').doc(this.state.collectionId).collection('images').doc(id);
         editImage.set(
             {description:text},
             {merge:true})
-            .then(
-                this.loadAlbums(this.state.collection)
-            )
+            .then(()=>{
+                if (shuffleIndex===null){
+                    this.loadAlbums(saveCollection)
+                }
+                else {
+                    this.setShuffleArray(shuffleIndex, saveCollection);
+                }
+            })
             .catch(function(error) {
                 console.error("Error adding document: ", error);
-            });
+        });
+    }
+
+    setShuffleArray(array, collection){
+        array.forEach(
+            (picture, arrayIndex) => {
+                let editImage = firebase.db.collection('folders').doc(this.state.collectionId).collection('images').doc(picture.id);
+                editImage.set(
+                    {index:picture.index},
+                    {merge:true})
+                .then(()=>{
+                    if (arrayIndex === array.length - 1){
+                        this.loadAlbums(collection)
+                    }
+                })
+            }
+        )
+    }
+
+    makeShuffleArray(index){
+        let shuffleIndex = this.getCollections(this.state.collection).images.filter(function(value) {
+            if (this.state.fullScreenIndex > index){
+                return value.index >= index && value.index <= this.state.fullScreenIndex;
+            }
+            else {
+                return value.index <= index && value.index >= this.state.fullScreenIndex;
+            }
+        }, this);
+        let fromObject = shuffleIndex.find((value) => value.index === this.state.fullScreenIndex);
+        fromObject.index = index;
+        shuffleIndex.forEach(
+            (value)=>{
+                if (this.state.fullScreenIndex > index){
+                    if (value.id!==fromObject.id){
+                        value.index += 1;
+                    }
+                }
+                else {
+                    if (value.id!==fromObject.id){
+                        value.index -=1;
+                    }
+                }
+            }
+        )
+        return shuffleIndex;
     }
 
     updateChart(name, dateValue, value){
         let collectionName = name + 'Chart'
         let collection = firebase.db.collection(collectionName);
         collection.add({
-        date: dateValue,
-        [name]: value,
+            date: dateValue,
+            [name]: value,
         })
         .then(this.reloadCharts())
         .catch(function(error) {
@@ -278,21 +292,23 @@ class App extends Component {
         });
     }
 
+    scrollBackToImage(){
+        window.scrollTo(0, this.state.scrollTo);
+        this.setState({
+            scrollTo:null,
+        })
+    }
+
     enterPin(pin){
         let hashed = hash(pin).toString().toLowerCase();
         if (hashed===token.token.toLowerCase()){
             this.setState({
                 auth:true,
             });
-            if (iOS()){
-                this.setState({
-                    storeState:true,
-                });
-            }
         }
     }
 
-    toggleFullScreen(input, text, id){
+    toggleFullScreen(input, text, id, index, size){
         if (this.state.fullscreenView){
             this.setState({
                 fullscreenView:false,
@@ -304,6 +320,8 @@ class App extends Component {
                 fullscreenView:true,
                 fullscreenImage:input,
                 fullscreenText:text,
+                fullScreenIndex:index,
+                fullscreenSize:size,
                 pictureId:id,
             });
             document.getElementsByTagName("Meta").viewport.setAttribute('content', 'viewport-fit=cover, width=device-width, initial-scale=1, maximum-scale=2.0, user-scalable=yes, shrink-to-fit=no')
@@ -329,9 +347,7 @@ class App extends Component {
     endSession(){
         this.setState({
             auth:false,
-            storeState:false,
         });
-        localStorage.clear();
     }
 
     render() {
@@ -343,6 +359,7 @@ class App extends Component {
                         toggleMenu={this.toggleMenu.bind(this)}
                         getCollections={this.getCollections.bind(this)}
                         selectCollection={this.selectCollection.bind(this)}
+                        isAdmin={this.state.firebaseUser}
                         />
                 </div>
                 <div>
@@ -364,8 +381,10 @@ class App extends Component {
                             toggleFullScreen={this.toggleFullScreen.bind(this)}
                             getImage={this.getImage.bind(this)}
                             firebaseUser={this.state.firebaseUser}
+                            scrollTo={this.state.scrollTo}
+                            scrollBackToImage={this.scrollBackToImage.bind(this)}
                             />
-                    :!this.state.collection && this.state.auth ?
+                        :!this.state.collection && this.state.auth ?
                         <DefaultScreen
                             weight={this.state.weight}
                             height={this.state.height}
@@ -373,7 +392,7 @@ class App extends Component {
                             updateChart={this.updateChart.bind(this)}
                             deleteFromChart={this.deleteFromChart.bind(this)}
                             />
-                    :this.state.editor ?
+                        :this.state.editor ?
                         <AdminLogin
                             loginAdmin={this.loginAdmin.bind(this)}
                             firebaseUser={this.state.firebaseUser}
@@ -392,30 +411,13 @@ class App extends Component {
                         pictureId={this.state.pictureId}
                         isAdmin={this.state.firebaseUser}
                         editImage={this.editImage.bind(this)}
+                        fullScreenIndex={this.state.fullScreenIndex}
+                        fullscreenSize={this.state.fullscreenSize}
                         />
                 </div>
             </div>
         );
     }
-}
-
-function iOS() {
-  var iDevices = [
-     // 'MacIntel',
-    'iPad Simulator',
-    'iPhone Simulator',
-    'iPod Simulator',
-    'iPad',
-    'iPhone',
-    'iPod'
-  ];
-
-  if (!!navigator.platform) {
-    while (iDevices.length) {
-      if (navigator.platform === iDevices.pop()){return true; }
-    }
-  }
-  return false;
 }
 
 export default App;

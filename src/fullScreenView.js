@@ -11,16 +11,25 @@ import CheckIcon from '@material-ui/icons/Check';
 import Fab from '@material-ui/core/Fab';
 import EditIcon from '@material-ui/icons/Edit';
 import Toolbar from '@material-ui/core/Toolbar';
+import MenuItem from '@material-ui/core/MenuItem';
 
 let color = '#3366ff';
 
 function FullscreenView(props){
     const [showText, toggleText] = useState(true);
     const [editText, toggleEdit] = useState(false);
+    const [currentIndex, setIndex] = useState(0);
+
+    let collectionLength = [...Array(props.fullscreenSize).keys()];
 
     function sendAndClose(){
-        props.editImage(document.getElementById('Beskrivning').value, props.pictureId);
+        props.editImage(document.getElementById('Beskrivning').value, props.pictureId, currentIndex === props.fullScreenIndex ? null : currentIndex);
         toggleEdit(!editText);
+    }
+
+    function openEdit(){
+        setIndex(props.fullScreenIndex)
+        toggleEdit(!editText)
     }
 
     return(
@@ -38,7 +47,7 @@ function FullscreenView(props){
                             key="edit"
                             aria-label="Close"
                             color="inherit"
-                            onClick={()=>toggleEdit(!editText)}
+                            onClick={()=>openEdit()}
                             >
                             <EditIcon />
                         </IconButton>,
@@ -61,40 +70,56 @@ function FullscreenView(props){
                         </IconButton>,
                     ]
                 }
-                    />
-                <div className='photoCardFull'
-                    onClick={()=>toggleText(!showText)}
-                    >
-                    <img src={props.fullscreenImage} className='pictureFullScreen' alt=''/>
-                </div>
-                <Fab variant='round' style={{position:'fixed',backgroundColor: '#ffffff', color: color, bottom:10, right:10}} className='exitButton' onClick={()=>props.toggleFullScreen()}>
-                    <Icon>close</Icon>
-                </Fab>
-                  <Dialog open={editText} onClose={()=>toggleEdit(false)} aria-labelledby="form-dialog-title" fullWidth>
-                      <DialogTitle id="form-dialog-title">Ändra beskrivning</DialogTitle>
-                      <DialogContent>
-                          <TextField
-                              autoFocus
-                              id="Beskrivning"
-                              label="Beskrivning:"
-                              type="text"
-                              defaultValue={props.fullscreenText}
-                              multiline
-                              fullWidth
-                          />
-                          <Toolbar>
-                              <IconButton style={{color:color, marginLeft:'auto'}} onClick={()=>sendAndClose()}>
-                                  <CheckIcon />
-                              </IconButton>
-                              <IconButton style={{color:color, marginRight:'auto'}} onClick={()=>toggleEdit(!editText)}>
-                                  <CloseIcon />
-                              </IconButton>
-                          </Toolbar>
-                      </DialogContent>
-                  </Dialog>
+                />
+            <div className='photoCardFull'
+                onClick={()=>toggleText(!showText)}
+                >
+                <img src={props.fullscreenImage} className='pictureFullScreen' alt=''/>
+            </div>
+            <Fab variant='round' style={{position:'fixed',backgroundColor: '#ffffff', color: color, bottom:10, right:10}} className='exitButton' onClick={()=>props.toggleFullScreen()}>
+                <Icon>close</Icon>
+            </Fab>
+            <Dialog open={editText} onClose={()=>toggleEdit(false)} aria-labelledby="form-dialog-title" fullWidth>
+                <DialogTitle id="form-dialog-title">Ändra bild</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        id="Beskrivning"
+                        label="Ändra beskrivning:"
+                        type="text"
+                        defaultValue={props.fullscreenText}
+                        multiline
+                        fullWidth
+                        />
+                    <TextField
+                        fullWidth
+                        id="Index-Toggle"
+                        select
+                        label="Ändra ordning"
+                        margin="normal"
+                        value={currentIndex}
+                        onChange={(e)=>{setIndex(e.target.value)}}
+                        >
+                        {collectionLength.map(
+                            (value) => (
+                                <MenuItem key={value} value={value}>
+                                    {value+1}
+                                </MenuItem>
+                            )
+                        )}
+                    </TextField>
+                    <Toolbar>
+                        <IconButton style={{color:color, marginLeft:'auto'}} onClick={()=>sendAndClose()}>
+                            <CheckIcon />
+                        </IconButton>
+                        <IconButton style={{color:color, marginRight:'auto'}} onClick={()=>toggleEdit(false)}>
+                            <CloseIcon />
+                        </IconButton>
+                    </Toolbar>
+                </DialogContent>
             </Dialog>
-        </div>
-    );
+        </Dialog>
+    </div>
+);
 }
 
 

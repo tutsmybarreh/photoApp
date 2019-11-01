@@ -1,21 +1,22 @@
-1. Edit Image Caption
-2. Arrange images
 3. Edit Collection data
 4. Arrange Collections
 Finish albums in firebase
 Remove Old stuff from app.js, collectionView, dataStructureLoad, static Images etc
 5. Add/Remove Images
 6. Add/Remove Collections
+7. Refactor and remove reloadCharts(), call both in componentDidMount() then only update the one edited on delete/add
 
-Other stuff:
--Landscape overflow on Authscreen
+-Landscape overflow on authScreen
+
+-Option to Group Collections
+-Next Collection on scroll to bottom
+
 -Collection Title stick to navbar on scroll
--Group collections somehow?
--Next Collection on scroll to bottom?
 -Style up CollectionView picture frame
--Remove divider in between "Album" and collections menu.js??
 
-AdminHandlers
+-Remove divider in between "Album" and collections menu.js?
+
+Admin Logic
   +Add Collection from menu drawer "+"
       -Creates a folder in storage
       -Creates a reference object [title, subTitle, path, index, images[]]
@@ -25,9 +26,6 @@ AdminHandlers
   +Add image "+" at bottom of collection package
       -Creates an image in storage folders
       -Creates a reference object in images folder object [description, path, index]
-  +Edit image 'pen' symbol under each image. Options (Update text, or remove)
-      -updateText changes text in reference Object
-      -remove deletes reference object and image from folder
 
 Filestructure
 

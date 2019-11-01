@@ -22,6 +22,10 @@ function CollectionView(props) {
             setSwapCheck(true);
             setAlbumLoaded(false);
         }
+        //Returning from fullscreenview and has edited image
+        if (checkForSwap && props.scrollTo){
+            props.scrollBackToImage();
+        }
     })
 
     //Old Stuff
@@ -32,7 +36,7 @@ function CollectionView(props) {
             let image = imagePath(path+images[object]);
             album.push(
                 <div key={object}>
-                    <div className='photoCard' onClick={()=>props.toggleFullScreen(image, object, null)}>
+                    <div className='photoCard' onClick={()=>props.toggleFullScreen(image, object, null, null, null)}>
                         <Paper elevation={1} square={true}>
                             <div className='padderino'>
                                 <div className='polaroid'>
@@ -57,17 +61,17 @@ function CollectionView(props) {
         return (
             <div>
                 {albumArray.sort((a,b)=> a.index-b.index).map(
-                    (value, index)=>{return imageCard(value.url, value.description, index, value.id, align)}
+                    (value, index, array)=>{return imageCard(value.url, value.description, index, value.id, align, array.length)}
                 )}
             </div>
-    )
+        )
     }
 
     //New Stuff
-    function imageCard(path, description, key, id, align){
+    function imageCard(path, description, key, id, align, size){
         return (
             <div key={key}>
-                <div className='photoCard' onClick={()=>props.toggleFullScreen(path, description, id)}>
+                <div className='photoCard' onClick={()=>props.toggleFullScreen(path, description, id, key, size)}>
                     <Paper elevation={1} square={true}>
                         <div className='padderino'>
                             <div className='polaroid'>
@@ -93,23 +97,23 @@ function CollectionView(props) {
         images.forEach(
             (value, index, array) => {
                 let imagePath = path+value.name;
-                 props.getImage(imagePath).then(
-                     (url) => {
-                         let image = {
-                             'index':value.index,
-                             'url':url,
-                             'description':value.description,
-                             'id':value.id
-                         }
-                         album.push(image);
-                         itemsProcessed++;
-                         if (itemsProcessed === array.length){
-                             // console.log('firebase load done')
-                             setAlbum(album);
-                             setDone(true);
+                props.getImage(imagePath).then(
+                    (url) => {
+                        let image = {
+                            'index':value.index,
+                            'url':url,
+                            'description':value.description,
+                            'id':value.id
                         }
-                     }
-                 )
+                        album.push(image);
+                        itemsProcessed++;
+                        if (itemsProcessed === array.length){
+                            // console.log('firebase load done')
+                            setAlbum(album);
+                            setDone(true);
+                        }
+                    }
+                )
             }
         )
     }
@@ -131,9 +135,9 @@ function CollectionView(props) {
                 {props.collection.description}
             </Typography>
             {newCollection ? albumArray.length !== 0 ?
-            createFirebaseAlbum(align)
-            : null
-            : createAlbum(images, align, path)
+                createFirebaseAlbum(align)
+                : null
+                : createAlbum(images, align, path)
             }
         </div>
     );
