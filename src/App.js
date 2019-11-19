@@ -4,6 +4,7 @@ import './App.css';
 import Navbar from "./navbar.js";
 import Menu from "./menu.js";
 import CollectionView from'./collectionView.js';
+import CollectionEdit from'./collectionEdit.js';
 import AuthScreen from'./authScreen.js';
 import FullscreenView from'./fullScreenView.js'
 import DefaultScreen from'./defaultScreen.js';
@@ -26,8 +27,10 @@ class App extends Component {
             fullscreenView: false,
             fullscreenImage:"",
             fullscreenText:"",
-            fullScreenIndex:null,
+            fullscreenIndex:null,
             fullscreenSize:null,
+            collectionEditor:false,
+            collectionEditData:null,
             editor:false,
             firebaseUser:null,
             weight:null,
@@ -83,7 +86,7 @@ class App extends Component {
         }
     }
 
-    async loadAlbums(reload, scrollValue){
+    async loadAlbums(reload){
         let albums = await firebase.db.collection('folders').get().then(
             (querySnapshot) => {
                 let data = [];
@@ -121,7 +124,6 @@ class App extends Component {
             this.setState({
                 collection:reload,
             });
-            // window.scrollTo(0, scrollValue)
         }
     }
 
@@ -146,7 +148,7 @@ class App extends Component {
             scrollTo:window.scrollY,
             fullscreenText:text,
             collection:null,
-            fullScreenIndex: index!==null ? index : this.state.fullScreenIndex,
+            fullscreenIndex: index!==null ? index : this.state.fullscreenIndex,
         });
         let editImage = firebase.db.collection('folders').doc(this.state.collectionId).collection('images').doc(id);
         editImage.set(
@@ -160,9 +162,33 @@ class App extends Component {
                     this.setShuffleArray(shuffleIndex, saveCollection);
                 }
             })
-            .catch(function(error) {
-                console.error("Error adding document: ", error);
-        });
+            .catch(e => console.log(e.message));
+    }
+
+    editCollection(id, name, description, newIndex=null){
+        console.log(id, this.state.collectionId, name, description, newIndex);
+        //Check if Index && newIndex !== this.state.index
+        let collision = this.state.filestructure.find(
+            (value) => value.name === name && value.id !== id
+        ) ? true : false;
+        if (collision===false){
+            const saveCollection = this.state.collectionId === id && id!==null ? name : this.state.collection;
+            this.setState({
+                scrollTo: saveCollection ? window.scrollY : null,
+                collection:null,
+            });
+            let collection = firebase.db.collection('folders').doc(id);
+            collection.set(
+                {
+                    name:name,
+                    description:description,
+                },
+                {merge:true})
+                .then(()=>{
+                    this.loadAlbums(saveCollection)
+                }).catch(e => console.log(e.message));
+        }
+
     }
 
     setShuffleArray(array, collection){
@@ -183,18 +209,18 @@ class App extends Component {
 
     makeShuffleArray(index){
         let shuffleIndex = this.getCollections(this.state.collection).images.filter(function(value) {
-            if (this.state.fullScreenIndex > index){
-                return value.index >= index && value.index <= this.state.fullScreenIndex;
+            if (this.state.fullscreenIndex > index){
+                return value.index >= index && value.index <= this.state.fullscreenIndex;
             }
             else {
-                return value.index <= index && value.index >= this.state.fullScreenIndex;
+                return value.index <= index && value.index >= this.state.fullscreenIndex;
             }
         }, this);
-        let fromObject = shuffleIndex.find((value) => value.index === this.state.fullScreenIndex);
+        let fromObject = shuffleIndex.find((value) => value.index === this.state.fullscreenIndex);
         fromObject.index = index;
         shuffleIndex.forEach(
             (value)=>{
-                if (this.state.fullScreenIndex > index){
+                if (this.state.fullscreenIndex > index){
                     if (value.id!==fromObject.id){
                         value.index += 1;
                     }
@@ -217,18 +243,33 @@ class App extends Component {
             [name]: value,
         })
         .then(this.reloadCharts())
-        .catch(function(error) {
-            console.error("Error adding document: ", error);
-        });
+        .catch(e => console.log(e.message));
     }
 
     deleteFromChart(name, id){
         let collectionName = name + 'Chart';
         let collection = firebase.db.collection(collectionName).doc(id);
         collection.delete().then(this.reloadCharts())
-        .catch(function(error) {
-            console.error("Error removing document: ", error);
-        });
+        .catch(e => console.log(e.message));
+    }
+
+    toggleCollectionEditor(id, name, description, index){
+        if (id){
+            this.setState({
+                collectionEditor:true,
+                collectionEditData:{
+                    id:id,
+                    name:name,
+                    description:description,
+                    index:index,
+                },
+            });
+        }
+        else {
+            this.setState({
+                collectionEditor:false,
+            });
+        }
     }
 
     toggleMenu(input){
@@ -320,7 +361,7 @@ class App extends Component {
                 fullscreenView:true,
                 fullscreenImage:input,
                 fullscreenText:text,
-                fullScreenIndex:index,
+                fullscreenIndex:index,
                 fullscreenSize:size,
                 pictureId:id,
             });
@@ -360,6 +401,7 @@ class App extends Component {
                         getCollections={this.getCollections.bind(this)}
                         selectCollection={this.selectCollection.bind(this)}
                         isAdmin={this.state.firebaseUser}
+                        toggleCollectionEditor={this.toggleCollectionEditor.bind(this)}
                         />
                 </div>
                 <div>
@@ -408,13 +450,19 @@ class App extends Component {
                         toggleFullScreen={this.toggleFullScreen.bind(this)}
                         fullscreenImage={this.state.fullscreenImage}
                         fullscreenText={this.state.fullscreenText}
+                        fullscreenIndex={this.state.fullscreenIndex}
+                        fullscreenSize={this.state.fullscreenSize}
                         pictureId={this.state.pictureId}
                         isAdmin={this.state.firebaseUser}
                         editImage={this.editImage.bind(this)}
-                        fullScreenIndex={this.state.fullScreenIndex}
-                        fullscreenSize={this.state.fullscreenSize}
                         />
                 </div>
+                <CollectionEdit
+                    collectionEditor={this.state.collectionEditor}
+                    toggleCollectionEditor={()=>this.toggleCollectionEditor()}
+                    collectionEditData={this.state.collectionEditData}
+                    editCollection={this.editCollection.bind(this)}
+                />
             </div>
         );
     }

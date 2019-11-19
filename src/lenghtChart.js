@@ -17,7 +17,7 @@ let options = {
 
 function LenghtChart(props){
     return(
-        <div className='photoCard'>
+        <div className='photoCard noselect'>
             <Paper elevation={1} square={true}>
                 {props.height ? (
                     <Chart

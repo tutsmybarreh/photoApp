@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-// import IconButton from '@material-ui/core/IconButton';
 
 function CollectionView(props) {
     const [albumArray, setAlbum] = useState([]);                //Hook containing new collections
@@ -36,7 +35,7 @@ function CollectionView(props) {
             let image = imagePath(path+images[object]);
             album.push(
                 <div key={object}>
-                    <div className='photoCard' onClick={()=>props.toggleFullScreen(image, object, null, null, null)}>
+                    <div className='photoCard noselect' onClick={()=>props.toggleFullScreen(image, object, null, null, null)}>
                         <Paper elevation={1} square={true}>
                             <div className='padderino'>
                                 <div className='polaroid'>
@@ -71,7 +70,7 @@ function CollectionView(props) {
     function imageCard(path, description, key, id, align, size){
         return (
             <div key={key}>
-                <div className='photoCard' onClick={()=>props.toggleFullScreen(path, description, id, key, size)}>
+                <div className='photoCard noselect' onClick={()=>props.toggleFullScreen(path, description, id, key, size)}>
                     <Paper elevation={1} square={true}>
                         <div className='padderino'>
                             <div className='polaroid'>

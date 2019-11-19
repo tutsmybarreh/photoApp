@@ -50,9 +50,9 @@ function DefaultScreen(props){
         if (reply){
             props.deleteFromChart(targetCollection, deleteId)
         }
-            deletePromt(false);
-            toggleId(null);
-            toggleTarget("");
+        deletePromt(false);
+        toggleId(null);
+        toggleTarget("");
     }
 
     let currentDate = new Date();
@@ -78,33 +78,29 @@ function DefaultScreen(props){
             <LenghtChart height={props.height} firebaseUser={props.firebaseUser}/>
             {props.firebaseUser ? editBar(()=>toggleMeasurmentAndSetHook('height'), ()=>toggleRemove('height')):null}
 
-            <Dialog open={addMeasurment === 'weight' || addMeasurment === 'height'} onClose={()=>toggleMeasurment('')}>
+            <Dialog open={addMeasurment === 'weight' || addMeasurment === 'height'} onClose={()=>toggleMeasurment('')} fullWidth>
                 <DialogTitle id="addMeasure">{addMeasurment === 'weight' ? 'Lägg till vikt': addMeasurment === 'height' ? 'Lägg till längd':''}</DialogTitle>
                 <DialogContent>
-                    <List>
-                        <ListItem>
-                            <TextField
-                                id="date"
-                                label="Datum"
-                                type="date"
-                                defaultValue={new Date().toJSON().slice(0,10).replace(/-/g,'-')}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                onChange={e=>toggleDate(new Date(e.target.value))}
-                                />
-                        </ListItem>
-                        <ListItem>
-                            <TextField
-                                id="standard-name"
-                                label={addMeasurment === 'weight' ? 'Vikt (kg)': addMeasurment === 'height' ? 'Längd (cm)':''}
-                                margin="normal"
-                                type="number"
-                                defaultValue={getLatest(props, addMeasurment)}
-                                onChange={e=>toggleValue(e.target.value)}
-                                />
-                        </ListItem>
-                    </List>
+                    <TextField
+                        id="date"
+                        label="Datum"
+                        type="date"
+                        defaultValue={new Date().toJSON().slice(0,10).replace(/-/g,'-')}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        onChange={e=>toggleDate(new Date(e.target.value))}
+                        fullWidth
+                        />
+                    <TextField
+                        id="standard-name"
+                        label={addMeasurment === 'weight' ? 'Vikt (kg)': addMeasurment === 'height' ? 'Längd (cm)':''}
+                        margin="normal"
+                        type="number"
+                        defaultValue={getLatest(props, addMeasurment)}
+                        onChange={e=>toggleValue(e.target.value)}
+                        fullWidth
+                        />
                     <ListItem>
                         <IconButton onClick={()=>closeDialogUpdateChart()} style={{color:color, marginLeft:'auto'}}>
                             <Icon>check</Icon>
@@ -115,7 +111,7 @@ function DefaultScreen(props){
                     </ListItem>
                 </DialogContent>
             </Dialog>
-            <Dialog open={removeMeasurment === 'weight' || removeMeasurment === 'height'} onClose={()=>toggleRemove('')}>
+            <Dialog open={removeMeasurment === 'weight' || removeMeasurment === 'height'} onClose={()=>toggleRemove('')} fullWidth>
                 <DialogContent>
                     <List>
                         {props[removeMeasurment] ? (
@@ -139,7 +135,7 @@ function DefaultScreen(props){
                 </List>
             </DialogContent>
         </Dialog>
-        <Dialog open={verifyDelete} onClose={()=>deletePromt(false)}>
+        <Dialog open={verifyDelete} onClose={()=>deletePromt(false)} fullWidth>
             <DialogTitle id="approveDelete">Ta bort?</DialogTitle>
             <DialogContent>
                 <Toolbar>
@@ -158,7 +154,7 @@ function DefaultScreen(props){
 
 function getLatest(props, sort){
     if (props[sort])
-        return props[sort][props[sort].length-1][1]
+    return props[sort][props[sort].length-1][1]
 }
 
 function editBar(toggle, toggleDelete){

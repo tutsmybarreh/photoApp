@@ -23,12 +23,12 @@ function FullscreenView(props){
     let collectionLength = [...Array(props.fullscreenSize).keys()];
 
     function sendAndClose(){
-        props.editImage(document.getElementById('Beskrivning').value, props.pictureId, currentIndex === props.fullScreenIndex ? null : currentIndex);
+        props.editImage(document.getElementById('Beskrivning').value, props.pictureId, currentIndex === props.fullscreenIndex ? null : currentIndex);
         toggleEdit(!editText);
     }
 
     function openEdit(){
-        setIndex(props.fullScreenIndex)
+        setIndex(props.fullscreenIndex)
         toggleEdit(!editText)
     }
 
@@ -71,7 +71,7 @@ function FullscreenView(props){
                     ]
                 }
                 />
-            <div className='photoCardFull'
+            <div className='photoCardFull noselect'
                 onClick={()=>toggleText(!showText)}
                 >
                 <img src={props.fullscreenImage} className='pictureFullScreen' alt=''/>
@@ -82,31 +82,31 @@ function FullscreenView(props){
             <Dialog open={editText} onClose={()=>toggleEdit(false)} aria-labelledby="form-dialog-title" fullWidth>
                 <DialogTitle id="form-dialog-title">Ändra bild</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        id="Beskrivning"
-                        label="Ändra beskrivning:"
-                        type="text"
-                        defaultValue={props.fullscreenText}
-                        multiline
-                        fullWidth
-                        />
-                    <TextField
-                        fullWidth
-                        id="Index-Toggle"
-                        select
-                        label="Ändra ordning"
-                        margin="normal"
-                        value={currentIndex}
-                        onChange={(e)=>{setIndex(e.target.value)}}
-                        >
-                        {collectionLength.map(
-                            (value) => (
-                                <MenuItem key={value} value={value}>
-                                    {value+1}
-                                </MenuItem>
-                            )
-                        )}
-                    </TextField>
+                        <TextField
+                            id="Beskrivning"
+                            label="Ändra beskrivning:"
+                            type="text"
+                            defaultValue={props.fullscreenText}
+                            multiline
+                            fullWidth
+                            />
+                        <TextField
+                            fullWidth
+                            id="Index-Toggle"
+                            select
+                            label="Ändra ordning"
+                            margin="normal"
+                            value={currentIndex}
+                            onChange={(e)=>{setIndex(e.target.value)}}
+                            >
+                            {collectionLength.map(
+                                (value) => (
+                                    <MenuItem key={value} value={value}>
+                                        {value+1}
+                                    </MenuItem>
+                                )
+                            )}
+                        </TextField>
                     <Toolbar>
                         <IconButton style={{color:color, marginLeft:'auto'}} onClick={()=>sendAndClose()}>
                             <CheckIcon />
