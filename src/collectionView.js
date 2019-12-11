@@ -27,35 +27,6 @@ function CollectionView(props) {
         }
     })
 
-    //Old Stuff
-    function createAlbum(images, align, path){
-        const imagePath = require.context('./images', true);
-        let album = [];
-        for (let object in images){
-            let image = imagePath(path+images[object]);
-            album.push(
-                <div key={object}>
-                    <div className='photoCard noselect' onClick={()=>props.toggleFullScreen(image, object, null, null, null)}>
-                        <Paper elevation={1} square={true}>
-                            <div className='padderino'>
-                                <div className='polaroid'>
-                                    <div className='picturFrame'>
-                                        <img src={image} className='pictureHolder' alt=''/>
-                                    </div>
-                                </div>
-                            </div>
-                        </Paper>
-                    </div>
-                    <Typography align={align} paragraph={true}>
-                        {object}
-                    </Typography>
-                </div>
-            )
-        }
-        return album;
-    };
-
-    //New Stuff
     function createFirebaseAlbum(align){
         return (
             <div>
@@ -66,7 +37,6 @@ function CollectionView(props) {
         )
     }
 
-    //New Stuff
     function imageCard(path, description, key, id, align, size){
         return (
             <div key={key}>
@@ -88,7 +58,6 @@ function CollectionView(props) {
         )
     }
 
-    //New Stuff
     function firebaseAlbum(images, path){
         // console.log('firbaseloadStart')
         let album = [...albumArray];
@@ -117,11 +86,10 @@ function CollectionView(props) {
         )
     }
 
-    let align = 'center';                                                       //REMOVES when FireBase Done
-    let images = props.collection.images;                                       //REMOVES when FireBase Done
-    let path = props.collection.path;                                           //REMOVES when FireBase Done
-    let newCollection = typeof props.collection.Index === 'number';             //REMOVES when FireBase Done
-    if (images && newCollection && !albumLoaded && !albumDone){
+    let align = 'center';
+    let images = props.collection.images;
+    let path = props.collection.path;
+    if (images && !albumLoaded && !albumDone){
         firebaseAlbum(images, path);
         setAlbumLoaded(true);
     }
@@ -133,10 +101,9 @@ function CollectionView(props) {
             <Typography align={align} paragraph={true}>
                 {props.collection.description}
             </Typography>
-            {newCollection ? albumArray.length !== 0 ?
+            {albumArray.length !== 0 ?
                 createFirebaseAlbum(align)
                 : null
-                : createAlbum(images, align, path)
             }
         </div>
     );

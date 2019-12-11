@@ -26,11 +26,5 @@ yarn-error.log*
 #firebasehandler
 /src/firebase.js
 
-#dataStructure
-/src/dataStructure.json
-
-#images
-/src/images*
-
 #todo
 todo.txt

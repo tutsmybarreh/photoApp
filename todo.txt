@@ -1,4 +1,3 @@
-3. Edit Collection data
 Finish albums in firebase
 Remove Old stuff from app.js, collectionView, dataStructureLoad, static Images etc
 4. Arrange Collections

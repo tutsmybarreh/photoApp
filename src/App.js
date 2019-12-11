@@ -10,7 +10,6 @@ import FullscreenView from'./fullScreenView.js'
 import DefaultScreen from'./defaultScreen.js';
 import AdminLogin from './adminLogin.js';
 
-import oldFilestructure from './dataStructure.json';
 import token from './token.json';
 import hash from 'crypto-js/sha256';
 import firebase from './firebase.js';
@@ -87,6 +86,7 @@ class App extends Component {
     }
 
     async loadAlbums(reload){
+        //Create controllers to target reload of specific collection or collection && photo id
         let albums = await firebase.db.collection('folders').get().then(
             (querySnapshot) => {
                 let data = [];
@@ -102,7 +102,10 @@ class App extends Component {
                 header['id']=value.id;
                 this.loadCollection(value.id).then(
                     (value) => {
-                        if (Object.entries(value[0]).length !== 0){
+                        //2Fix This should check for empty array,
+                        // console.log(Object.keys(value[0]).length)
+                        //Added a temporary check to see if there is more keys present in the first index of the array other then ID
+                        if (value.length !== 0 && Object.keys(value[0]).length > 1){
                             header['images'] = value;
                         }
                         else {
@@ -112,13 +115,9 @@ class App extends Component {
                 );
                 return header;
             }
-        )
-        let existingFileSruct = [...oldFilestructure.folders];
-        filestructure.sort((a,b) => a.Index - b.Index).forEach(
-            (value) => {existingFileSruct.push(value)}
-        )
+        ).sort((a,b) => a.Index - b.Index)
         this.setState({
-            filestructure: existingFileSruct,
+            filestructure: filestructure,
         });
         if (reload){
             this.setState({
@@ -166,7 +165,7 @@ class App extends Component {
     }
 
     editCollection(id, name, description, newIndex=null){
-        console.log(id, this.state.collectionId, name, description, newIndex);
+        // console.log(id, this.state.collectionId, name, description, newIndex);
         //Check if Index && newIndex !== this.state.index
         let collision = this.state.filestructure.find(
             (value) => value.name === name && value.id !== id
