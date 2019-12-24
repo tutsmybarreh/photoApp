@@ -55,9 +55,15 @@ class App extends Component {
         this.loadAlbums();
     }
 
-    reloadCharts(){
-        this.loadChart('heightChart');
-        this.loadChart('weightChart');
+    //Make Targetable
+    reloadCharts(targetchart){
+        if (targetchart){
+            this.loadChart(targetchart);
+        }
+        else {
+            this.loadChart('heightChart');
+            this.loadChart('weightChart');
+        }
     }
 
     async loadChart(name){
@@ -102,7 +108,7 @@ class App extends Component {
                 header['id']=value.id;
                 this.loadCollection(value.id).then(
                     (value) => {
-                        //2Fix This should check for empty array,
+                        //2Fix This should check for empty array. Update, seems like subcollection images cant exist witouht objects.
                         // console.log(Object.keys(value[0]).length)
                         //Added a temporary check to see if there is more keys present in the first index of the array other then ID
                         if (value.length !== 0 && Object.keys(value[0]).length > 1){
@@ -164,12 +170,13 @@ class App extends Component {
             .catch(e => console.log(e.message));
     }
 
-    editCollection(id, name, description, newIndex=null){
+    editCollection(id, name, description, newIndex=null, oldIndex){
         // console.log(id, this.state.collectionId, name, description, newIndex);
         //Check if Index && newIndex !== this.state.index
         let collision = this.state.filestructure.find(
             (value) => value.name === name && value.id !== id
         ) ? true : false;
+        let swapIndex = newIndex!==null ? this.makeSwapCollections(newIndex, oldIndex) : false;
         if (collision===false){
             const saveCollection = this.state.collectionId === id && id!==null ? name : this.state.collection;
             this.setState({
@@ -184,7 +191,12 @@ class App extends Component {
                 },
                 {merge:true})
                 .then(()=>{
-                    this.loadAlbums(saveCollection)
+                    if (!swapIndex){
+                        this.loadAlbums(saveCollection)
+                    }
+                    else {
+                        this.setSwapCollections(swapIndex, saveCollection)
+                    }
                 }).catch(e => console.log(e.message));
         }
 
@@ -206,6 +218,22 @@ class App extends Component {
         )
     }
 
+    setSwapCollections(collections, saveCollection){
+        collections.forEach(
+            (collection, arrayIndex) => {
+                firebase.db.collection('folders').doc(collection.id).set(
+                    {Index:collection.Index},
+                    {merge:true})
+                .then(()=>{
+                    if (arrayIndex === collections.length - 1){
+                        this.loadAlbums(saveCollection)
+                    }
+                })
+            }
+        )
+    }
+
+    //Remake like makeSwapCollections
     makeShuffleArray(index){
         let shuffleIndex = this.getCollections(this.state.collection).images.filter(function(value) {
             if (this.state.fullscreenIndex > index){
@@ -234,6 +262,19 @@ class App extends Component {
         return shuffleIndex;
     }
 
+    makeSwapCollections(newIndex, oldIndex){
+        let filestructure = this.state.filestructure.sort((a,b) => a.Index-b.Index);
+        filestructure.splice(newIndex, 0, filestructure.splice(oldIndex, 1)[0]);
+        // eslint-disable-next-line
+        const swapArray = filestructure.filter((collection, index)=>{
+            if (collection.Index!==index){
+                collection.Index = index;
+                return collection;
+            }
+        })
+        return swapArray;
+    }
+
     updateChart(name, dateValue, value){
         let collectionName = name + 'Chart'
         let collection = firebase.db.collection(collectionName);
@@ -241,14 +282,14 @@ class App extends Component {
             date: dateValue,
             [name]: value,
         })
-        .then(this.reloadCharts())
+        .then(this.reloadCharts(collectionName))
         .catch(e => console.log(e.message));
     }
 
     deleteFromChart(name, id){
         let collectionName = name + 'Chart';
         let collection = firebase.db.collection(collectionName).doc(id);
-        collection.delete().then(this.reloadCharts())
+        collection.delete().then(this.reloadCharts(collectionName))
         .catch(e => console.log(e.message));
     }
 
@@ -267,6 +308,7 @@ class App extends Component {
         else {
             this.setState({
                 collectionEditor:false,
+                collectionEditData:null,
             });
         }
     }
@@ -461,6 +503,7 @@ class App extends Component {
                     toggleCollectionEditor={()=>this.toggleCollectionEditor()}
                     collectionEditData={this.state.collectionEditData}
                     editCollection={this.editCollection.bind(this)}
+                    numberOfCollections={this.state.filestructure ? this.state.filestructure.length : null}
                 />
             </div>
         );

@@ -42,7 +42,7 @@ function FullscreenView(props){
                     anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
                     open={showText}
                     message={<span id="message-id">{props.fullscreenText}</span>}
-                    action={ props.pictureId && props.isAdmin ? [
+                    action={ props.isAdmin ? [
                         <IconButton
                             key="edit"
                             aria-label="Close"
@@ -94,7 +94,7 @@ function FullscreenView(props){
                             fullWidth
                             id="Index-Toggle"
                             select
-                            label="Ändra ordning"
+                            label="Ändra ordning:"
                             margin="normal"
                             value={currentIndex}
                             onChange={(e)=>{setIndex(e.target.value)}}
@@ -107,19 +107,19 @@ function FullscreenView(props){
                                 )
                             )}
                         </TextField>
-                    <Toolbar>
-                        <IconButton style={{color:color, marginLeft:'auto'}} onClick={()=>sendAndClose()}>
-                            <CheckIcon />
-                        </IconButton>
-                        <IconButton style={{color:color, marginRight:'auto'}} onClick={()=>toggleEdit(false)}>
-                            <CloseIcon />
-                        </IconButton>
-                    </Toolbar>
-                </DialogContent>
+                        <Toolbar>
+                            <IconButton style={{color:color, marginLeft:'auto'}} onClick={()=>sendAndClose()}>
+                                <CheckIcon />
+                            </IconButton>
+                            <IconButton style={{color:color, marginRight:'auto'}} onClick={()=>toggleEdit(false)}>
+                                <CloseIcon />
+                            </IconButton>
+                        </Toolbar>
+                    </DialogContent>
+                </Dialog>
             </Dialog>
-        </Dialog>
-    </div>
-);
+        </div>
+    );
 }
 
 

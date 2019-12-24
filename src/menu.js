@@ -54,12 +54,11 @@ function Menu(props){
                                     return (
                                         <ListItem button
                                             key={value.name}
-                                            onClick={()=>{
-                                                edit && value.id ?
+                                            onClick={()=>{edit ?
                                                 props.toggleCollectionEditor(value.id, value.name, value.description, value.Index) :
                                                 props.selectCollection(value.name, value.id ? value.id : null)
                                             }}>
-                                            {edit && value.id ? (
+                                            {edit ? (
                                                 <ListItemIcon>
                                                     <EditIcon style={{color:color}} />
                                                 </ListItemIcon>

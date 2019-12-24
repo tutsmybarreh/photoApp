@@ -1,17 +1,16 @@
-Finish albums in firebase
-Remove Old stuff from app.js, collectionView, dataStructureLoad, static Images etc
-4. Arrange Collections
-5. Add/Remove Images
-6. Add/Remove Collections
-7. Refactor and remove reloadCharts(), call both in componentDidMount() then only update the one edited on delete/add
+1. Add/Remove Collections
+2. Add/Remove Images
+3. Refactor loadAlbums to be able to target Collection only (And maybe image only)
+4. NightMode Bug
 
 -Landscape overflow on authScreen
 
 -Option to Group Collections
 -Next Collection on scroll to bottom
--merge fullscreendata
+-merge fullscreendata like collectionEditData
 -Collection Title stick to navbar on scroll
 -Style up CollectionView picture frame
+-JSS CSS in Javascript?
 
 -Remove divider in between "Album" and collections menu.js?
 
