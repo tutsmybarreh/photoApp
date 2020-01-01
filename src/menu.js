@@ -7,7 +7,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import EditIcon from '@material-ui/icons/Edit';
 import PhotoAlbumIcon from '@material-ui/icons/PhotoAlbum';
-// import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
+import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 
 let color = '#3366ff';
 
@@ -46,6 +46,14 @@ function Menu(props){
                     </List>
                     <Divider />
                     <List>
+                        {edit ? (
+                            <ListItem button>
+                                <ListItemIcon>
+                                    <AddToPhotosIcon style={{color:color}} />
+                                </ListItemIcon>
+                                <ListItemText primary={'Nytt Album'} />
+                            </ListItem>
+                        ):null}
                         {props.getCollections().map(
                             function (value){
                                 if (process.env.NODE_ENV === 'production' && value.isTest){
@@ -70,11 +78,11 @@ function Menu(props){
                             }
                         }
                     )}
-                </List>
-            </div>
-        </SwipeableDrawer>
-    </div>
-);
+                    </List>
+                </div>
+            </SwipeableDrawer>
+        </div>
+    );
 }
 
 export default Menu;

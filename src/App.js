@@ -55,7 +55,6 @@ class App extends Component {
         this.loadAlbums();
     }
 
-    //Make Targetable
     reloadCharts(targetchart){
         if (targetchart){
             this.loadChart(targetchart);
@@ -91,8 +90,12 @@ class App extends Component {
         }
     }
 
-    async loadAlbums(reload){
-        //Create controllers to target reload of specific collection or collection && photo id
+    async loadAlbums(reload, collectionOnly=false){
+        //Create controllers to target reload of specific collection and also maybe specific photo (one case?)
+        if (collectionOnly){
+            console.log('Implement Reload Only Collection here')
+        }
+
         let albums = await firebase.db.collection('folders').get().then(
             (querySnapshot) => {
                 let data = [];
@@ -146,13 +149,11 @@ class App extends Component {
     }
 
     editImage(text, id, index=null){
-        //2Fix: collection needs to be nulled, in order to force update onto collectionView
         let shuffleIndex = index===null ? index : this.makeShuffleArray(index);
         const saveCollection = this.state.collection;
         this.setState({
             scrollTo:window.scrollY,
             fullscreenText:text,
-            collection:null,
             fullscreenIndex: index!==null ? index : this.state.fullscreenIndex,
         });
         let editImage = firebase.db.collection('folders').doc(this.state.collectionId).collection('images').doc(id);
@@ -161,17 +162,16 @@ class App extends Component {
             {merge:true})
             .then(()=>{
                 if (shuffleIndex===null){
-                    this.loadAlbums(saveCollection)
+                    this.loadAlbums(saveCollection, true)
                 }
                 else {
-                    this.setShuffleArray(shuffleIndex, saveCollection);
+                    this.setShuffleArray(shuffleIndex, saveCollection, true);
                 }
             })
             .catch(e => console.log(e.message));
     }
 
     editCollection(id, name, description, newIndex=null, oldIndex){
-        // console.log(id, this.state.collectionId, name, description, newIndex);
         //Check if Index && newIndex !== this.state.index
         let collision = this.state.filestructure.find(
             (value) => value.name === name && value.id !== id
@@ -192,7 +192,7 @@ class App extends Component {
                 {merge:true})
                 .then(()=>{
                     if (!swapIndex){
-                        this.loadAlbums(saveCollection)
+                        this.loadAlbums(saveCollection, true)
                     }
                     else {
                         this.setSwapCollections(swapIndex, saveCollection)
@@ -202,7 +202,7 @@ class App extends Component {
 
     }
 
-    setShuffleArray(array, collection){
+    setShuffleArray(array, collection, collectionOnly=false){
         array.forEach(
             (picture, arrayIndex) => {
                 let editImage = firebase.db.collection('folders').doc(this.state.collectionId).collection('images').doc(picture.id);
@@ -211,7 +211,7 @@ class App extends Component {
                     {merge:true})
                 .then(()=>{
                     if (arrayIndex === array.length - 1){
-                        this.loadAlbums(collection)
+                        this.loadAlbums(collection, collectionOnly)
                     }
                 })
             }

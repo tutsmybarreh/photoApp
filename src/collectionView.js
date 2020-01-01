@@ -3,29 +3,14 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
 function CollectionView(props) {
-    const [albumArray, setAlbum] = useState([]);                //Hook containing new collections
-    const [albumIdentifier, setAlbumId] = useState('');         //Contains the latest loaded new album ID, based on name property.
-    const [albumLoaded, setAlbumLoaded] = useState(false);      //Pre-Toggle set on intiate new collection load start
-    const [albumDone, setDone] = useState(false);               //Post-Toggle set on new collection load done
-    const [checkForSwap, setSwapCheck] = useState(false);       //When Both toggles are on, Activate tracking of new album
+    const [albumArray, setAlbum] = useState([]); //Hook containing new collections
 
     useEffect(() => {
-        //Reset Master Toggle
-        if (props.collection.name!==albumIdentifier && checkForSwap){
-            setAlbum([]);
-            setSwapCheck(false);
-            setDone(false);
-        }
-        if (albumLoaded && albumDone){
-            setAlbumId(props.collection.name)
-            setSwapCheck(true);
-            setAlbumLoaded(false);
-        }
-        //Returning from fullscreenview and has edited image
-        if (checkForSwap && props.scrollTo){
-            props.scrollBackToImage();
-        }
-    })
+        setAlbum([]);
+        const images = props.collection.images;
+        const path = props.collection.path;
+        firebaseAlbum(images, path);
+    }, [props.collection.images])
 
     function createFirebaseAlbum(align){
         return (
@@ -59,40 +44,35 @@ function CollectionView(props) {
     }
 
     function firebaseAlbum(images, path){
-        // console.log('firbaseloadStart')
-        let album = [...albumArray];
+        let album = [];
         let itemsProcessed = 0;
-        images.forEach(
-            (value, index, array) => {
-                let imagePath = path+value.name;
-                props.getImage(imagePath).then(
-                    (url) => {
-                        let image = {
-                            'index':value.index,
-                            'url':url,
-                            'description':value.description,
-                            'id':value.id
+        if (images){
+            images.forEach(
+                (value, index, array) => {
+                    let imagePath = path+value.name;
+                    props.getImage(imagePath).then(
+                        (url) => {
+                            let image = {
+                                'index':value.index,
+                                'url':url,
+                                'description':value.description,
+                                'id':value.id
+                            }
+                            album.push(image);
+                            itemsProcessed++;
+                            if (itemsProcessed === array.length){
+                                setAlbum(album);
+                                if (props.scrollTo){
+                                    props.scrollBackToImage();
+                                }
+                            }
                         }
-                        album.push(image);
-                        itemsProcessed++;
-                        if (itemsProcessed === array.length){
-                            // console.log('firebase load done')
-                            setAlbum(album);
-                            setDone(true);
-                        }
-                    }
-                )
-            }
-        )
+                    )
+                }
+            )
+        }
     }
-
-    let align = 'center';
-    let images = props.collection.images;
-    let path = props.collection.path;
-    if (images && !albumLoaded && !albumDone){
-        firebaseAlbum(images, path);
-        setAlbumLoaded(true);
-    }
+    const align = 'center';
     return(
         <div>
             <Typography variant="h5" align={align}>
