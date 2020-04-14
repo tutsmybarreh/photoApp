@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import './App.css';
-
 import Navbar from "./navbar.js";
 import Menu from "./menu.js";
+
 import CollectionView from'./collectionView.js';
 import CollectionEdit from'./collectionEdit.js';
+import CollectionAdd from'./collectionAdd.js';
 import AuthScreen from'./authScreen.js';
 import FullscreenView from'./fullScreenView.js'
 import DefaultScreen from'./defaultScreen.js';
@@ -23,13 +24,14 @@ class App extends Component {
             auth:false,            //Auth with PIN
             collection:null,       //Merge theese two when old stuff is gone?
             collectionId:null,     //Merge theese two when old stuff is gone?
-            fullscreenView: false,
-            fullscreenImage:"",
-            fullscreenText:"",
-            fullscreenIndex:null,
-            fullscreenSize:null,
+            fullscreenView: false,      
+            fullscreenImage:"",     //fullScrenData
+            fullscreenText:"",      //fullScrenData
+            fullscreenIndex:null,   //fullScrenData
+            fullscreenSize:null,    //fullScrenData
             collectionEditor:false,
             collectionEditData:null,
+            collectionAdd:false,
             editor:false,
             firebaseUser:null,
             weight:null,
@@ -51,6 +53,20 @@ class App extends Component {
                 })
             }
         })
+        firebase.db.collection('folders')
+        .onSnapshot(function(snapshot) {
+            snapshot.docChanges().forEach(function(change) {
+                if (change.type === "added") {
+                    console.log("New collection: ", change.doc.data());
+                }
+                if (change.type === "modified") {
+                    console.log("Modified collection: ", change.doc.data());
+                }
+                if (change.type === "removed") {
+                    console.log("Removed collection: ", change.doc.data());
+                }
+            });
+        });
         this.reloadCharts();
         this.loadAlbums();
     }
@@ -95,7 +111,6 @@ class App extends Component {
         if (collectionOnly){
             console.log('Implement Reload Only Collection here')
         }
-
         let albums = await firebase.db.collection('folders').get().then(
             (querySnapshot) => {
                 let data = [];
@@ -111,10 +126,7 @@ class App extends Component {
                 header['id']=value.id;
                 this.loadCollection(value.id).then(
                     (value) => {
-                        //2Fix This should check for empty array. Update, seems like subcollection images cant exist witouht objects.
-                        // console.log(Object.keys(value[0]).length)
-                        //Added a temporary check to see if there is more keys present in the first index of the array other then ID
-                        if (value.length !== 0 && Object.keys(value[0]).length > 1){
+                        if (value.length !== 0){            //Should take into account non-existing images if album empty.
                             header['images'] = value;
                         }
                         else {
@@ -178,11 +190,7 @@ class App extends Component {
         ) ? true : false;
         let swapIndex = newIndex!==null ? this.makeSwapCollections(newIndex, oldIndex) : false;
         if (collision===false){
-            const saveCollection = this.state.collectionId === id && id!==null ? name : this.state.collection;
-            this.setState({
-                scrollTo: saveCollection ? window.scrollY : null,
-                collection:null,
-            });
+            const saveCollection = this.saveCollectionState(this.state.saveCollectionState === id && id!==null ? name : this.state.collection);
             let collection = firebase.db.collection('folders').doc(id);
             collection.set(
                 {
@@ -200,6 +208,67 @@ class App extends Component {
                 }).catch(e => console.log(e.message));
         }
 
+    }
+
+    addCollection(name, description){
+        let collision = this.state.filestructure.find(
+            (value) => value.name === name 
+        ) ? true : false;
+        if (!collision && name.length > 1){
+            const saveCollection = this.saveCollectionState(this.state.collection);
+            let collection = firebase.db.collection('folders');
+            let nameSpace = name.replace(/[^a-zA-Z]+/g, '').toLowerCase()+this.state.filestructure.length+'/'
+            let path = 'images/'+nameSpace;
+            // let storage = firebase.storage.ref().child('images/');
+            // storage.put(nameSpace).then(function(snapshot) {
+            //     console.log('Uploaded a blob or file!');
+            // });
+            collection.add({
+                Index:this.state.filestructure.length,
+                name:name,
+                description:description,
+                isTest:false,
+                path:path,
+            })
+            .then(()=> {
+                this.loadAlbums(saveCollection, true);
+                }
+            )
+            .catch(e => console.log(e.message));
+        }
+    }
+
+    deleteCollection(id){
+        let collection = this.state.filestructure.find(
+            (value) => value.id === id 
+        )
+        let hasImages = Boolean(collection.images);
+        if (hasImages === false) {
+            const saveCollection = this.saveCollectionState(this.state.collectionId === id ? null : this.state.collection);
+            let dbCollection = firebase.db.collection('folders');
+            dbCollection.doc(id).delete()
+            .then(() => {
+                //2Fix, only pass Indexes above deleted 
+                let filestructure = this.state.filestructure.sort((a,b) => a.Index-b.Index);
+                let swapArray = filestructure.filter(value => value.id !== id).map((value, index) => {
+                    value.Index = index
+                    return value;
+                });
+                this.setSwapCollections(swapArray, saveCollection);
+            }).catch(function(error) {
+                console.error("Error removing document: ", error);
+            });
+            
+        }
+    }
+
+    saveCollectionState(condition){
+        const saveCollection = condition;
+        this.setState({
+            scrollTo: saveCollection ? window.scrollY : null,
+            collection:null,
+        });
+        return saveCollection;
     }
 
     setShuffleArray(array, collection, collectionOnly=false){
@@ -293,7 +362,7 @@ class App extends Component {
         .catch(e => console.log(e.message));
     }
 
-    toggleCollectionEditor(id, name, description, index){
+    toggleCollectionEditor(id, name, description, index, hasImages){
         if (id){
             this.setState({
                 collectionEditor:true,
@@ -302,6 +371,7 @@ class App extends Component {
                     name:name,
                     description:description,
                     index:index,
+                    hasImages:hasImages,
                 },
             });
         }
@@ -311,6 +381,12 @@ class App extends Component {
                 collectionEditData:null,
             });
         }
+    }
+
+    toggleCollectionAdd(){
+        this.setState({
+            collectionAdd:!this.state.collectionAdd,
+        })
     }
 
     toggleMenu(input){
@@ -417,6 +493,8 @@ class App extends Component {
         })
     }
 
+    
+
     loginAdmin(mail, password){
         const login = firebase.auth.signInWithEmailAndPassword(mail, password);
         login.catch(e => console.log(e.message));
@@ -443,6 +521,7 @@ class App extends Component {
                         selectCollection={this.selectCollection.bind(this)}
                         isAdmin={this.state.firebaseUser}
                         toggleCollectionEditor={this.toggleCollectionEditor.bind(this)}
+                        toggleCollectionAdd={this.toggleCollectionAdd.bind(this)}
                         />
                 </div>
                 <div>
@@ -504,6 +583,12 @@ class App extends Component {
                     collectionEditData={this.state.collectionEditData}
                     editCollection={this.editCollection.bind(this)}
                     numberOfCollections={this.state.filestructure ? this.state.filestructure.length : null}
+                    delete={this.deleteCollection.bind(this)}
+                />
+                <CollectionAdd
+                    show={this.state.collectionAdd}
+                    toggle={this.toggleCollectionAdd.bind(this)}
+                    add={this.addCollection.bind(this)}
                 />
             </div>
         );

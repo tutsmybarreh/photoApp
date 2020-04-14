@@ -47,7 +47,9 @@ function Menu(props){
                     <Divider />
                     <List>
                         {edit ? (
-                            <ListItem button>
+                            <ListItem button
+                                onClick={()=> props.toggleCollectionAdd()}
+                            >
                                 <ListItemIcon>
                                     <AddToPhotosIcon style={{color:color}} />
                                 </ListItemIcon>
@@ -63,7 +65,7 @@ function Menu(props){
                                         <ListItem button
                                             key={value.name}
                                             onClick={()=>{edit ?
-                                                props.toggleCollectionEditor(value.id, value.name, value.description, value.Index) :
+                                                props.toggleCollectionEditor(value.id, value.name, value.description, value.Index, value.images ? true : false) :
                                                 props.selectCollection(value.name, value.id ? value.id : null)
                                             }}>
                                             {edit ? (

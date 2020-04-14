@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@material-ui/icons/Check';
+import Icon from '@material-ui/core/Icon';
 import Toolbar from '@material-ui/core/Toolbar';
 import MenuItem from '@material-ui/core/MenuItem';
 
@@ -24,14 +25,17 @@ function CollectionEdit(props){
     })
     function sendAndClose(){
         props.editCollection(props.collectionEditData.id, document.getElementById('namn').value, document.getElementById('Beskrivning').value, currentIndex!==props.collectionEditData.index ? currentIndex : null, props.collectionEditData.index);
+        close();
+    }
+    function deleteAndClose(){
+        props.delete(props.collectionEditData.id);
+        close();
+    }
+    function close(){
         setLoaded(false);
         props.toggleCollectionEditor();
     }
-    function close(){
-        console.log(currentIndex!==props.collectionEditData.index)
-        setLoaded(false)
-        props.toggleCollectionEditor()
-    }
+
     return(
             <Dialog open={props.collectionEditor} onClose={()=>close()} aria-labelledby="form-dialog-title" fullWidth>
                 <DialogTitle id="form-dialog-title">Ändra Samling</DialogTitle>
@@ -73,6 +77,11 @@ function CollectionEdit(props){
                         <IconButton style={{color:color, marginLeft:'auto'}} onClick={()=>sendAndClose()}>
                             <CheckIcon />
                         </IconButton>
+                        { props.collectionEditData && props.collectionEditData.hasImages === false ? (
+                        <IconButton style={{color:color}} onClick={()=>deleteAndClose()}>
+                            <Icon>delete_forever</Icon>
+                        </IconButton>
+                        ):null}
                         <IconButton style={{color:color, marginRight:'auto'}} onClick={()=>close()}>
                             <CloseIcon />
                         </IconButton>

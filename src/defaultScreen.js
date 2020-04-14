@@ -69,6 +69,7 @@ function DefaultScreen(props){
             <Typography variant="h5" align='center' paragraph={true}>{tildeBorn.toJSON().slice(0,10).replace(/-/g,'-')}</Typography>
             <Typography align='center' paragraph={true}>Jag föddes klockan <b>11:34</b> måndagen den 24 september för <b>{daysAge}</b> dagar sen.</Typography>
             <Typography align='center' paragraph={true}>Idag är jag <b>{years}</b> år, <b>{months}</b> månader och <b>{days}</b> dagar gammal.</Typography>
+            <Typography align='center' paragraph={true}>Den 9 november, 2019, bestämde jag mig för att börja gå istället för att krypa.</Typography>
 
             <Typography align='center'>Vid min födsel vägde jag <b>3970</b> gram.</Typography>
             <WeightChart weight={props.weight} firebaseUser={props.firebaseUser}/>
@@ -91,7 +92,7 @@ function DefaultScreen(props){
                         }}
                         onChange={e=>toggleDate(new Date(e.target.value))}
                         fullWidth
-                        />
+                    />
                     <TextField
                         id="standard-name"
                         label={addMeasurment === 'weight' ? 'Vikt (kg)': addMeasurment === 'height' ? 'Längd (cm)':''}
@@ -100,7 +101,7 @@ function DefaultScreen(props){
                         defaultValue={getLatest(props, addMeasurment)}
                         onChange={e=>toggleValue(e.target.value)}
                         fullWidth
-                        />
+                    />
                     <ListItem>
                         <IconButton onClick={()=>closeDialogUpdateChart()} style={{color:color, marginLeft:'auto'}}>
                             <Icon>check</Icon>

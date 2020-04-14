@@ -1,7 +1,9 @@
-1. Add/Remove Collections
-2. Add/Remove Images
+1. Add/Remove Images
+2. Implement firestore listen, at lesat on collection changes. 
 3. Refactor loadAlbums to be able to target Collection only (And maybe image only)
-4. NightMode Bug
+4. Refactor makeShuffleArray
+5. NightMode Bug
+6. Fix age count days.
 
 -Landscape overflow on authScreen
 
