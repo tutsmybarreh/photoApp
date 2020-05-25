@@ -72,11 +72,11 @@ function DefaultScreen(props){
             <Typography align='center' paragraph={true}>Den 9 november, 2019, bestämde jag mig för att börja gå istället för att krypa.</Typography>
 
             <Typography align='center'>Vid min födsel vägde jag <b>3970</b> gram.</Typography>
-            <WeightChart weight={props.weight} firebaseUser={props.firebaseUser}/>
+            <WeightChart weight={props.weight}/>
             {props.firebaseUser ? editBar(()=>toggleMeasurmentAndSetHook('weight'), ()=>toggleRemove('weight')):null}
 
             <Typography align='center'>Jag var <b>52</b> centimeter lång.</Typography>
-            <LenghtChart height={props.height} firebaseUser={props.firebaseUser}/>
+            <LenghtChart height={props.height}/>
             {props.firebaseUser ? editBar(()=>toggleMeasurmentAndSetHook('height'), ()=>toggleRemove('height')):null}
 
             <Dialog open={addMeasurment === 'weight' || addMeasurment === 'height'} onClose={()=>toggleMeasurment('')} fullWidth>

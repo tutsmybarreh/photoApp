@@ -20,7 +20,8 @@ class App extends Component {
         super(props);
         this.state = {
             menutoggle:false,
-            filestructure:null,
+            filestructure:[],
+            dbListner: null,
             auth:false,            //Auth with PIN
             collection:null,       //Merge theese two when old stuff is gone?
             collectionId:null,     //Merge theese two when old stuff is gone?
@@ -53,23 +54,72 @@ class App extends Component {
                 })
             }
         })
-        firebase.db.collection('folders')
+        let me = this;
+        let filestructure = me.state.filestructure;
+        let dbListner = firebase.db.collection('folders')
         .onSnapshot(function(snapshot) {
-            snapshot.docChanges().forEach(function(change) {
-                if (change.type === "added") {
-                    console.log("New collection: ", change.doc.data());
+            snapshot.docChanges().forEach(function(change, index, collections) {
+                if (change.type === 'added') {
+                    let header = change.doc.data();
+                    header['id']=change.doc.id; 
+                    me.loadCollection(change.doc.id).then(
+                        (value) => {
+                            if (value.length !== 0){            //Should take into account non-existing images if album empty.
+                                header['images'] = value;
+                            }
+                            else {
+                                header['images'] = null;
+                            }
+                        }
+                    );
+                    filestructure.push(header);
                 }
-                if (change.type === "modified") {
-                    console.log("Modified collection: ", change.doc.data());
+                if (change.type === 'modified') {
+                    let header = change.doc.data();
+                    header['id']=change.doc.id; 
+                    me.loadCollection(change.doc.id).then(
+                        (value) => {
+                            if (value.length !== 0){            //Should take into account non-existing images if album empty.
+                                header['images'] = value;
+                            }
+                            else {
+                                header['images'] = null;
+                            }
+                        }
+                    );
+                    let record = filestructure.find(collection => collection.id === header.id);
+                    let index = filestructure.indexOf(record);
+                    filestructure[index]=header;
+                    me.setState({
+                        filestructure:filestructure.sort((a,b) => a.Index - b.Index),
+                    });
                 }
-                if (change.type === "removed") {
-                    console.log("Removed collection: ", change.doc.data());
+                if (change.type === 'removed') {
+                    let record = filestructure.find(collection => collection.id === change.doc.id);
+                    let index = filestructure.indexOf(record);
+                    filestructure.splice(index, 1)
+                    me.setState({
+                        filestructure:filestructure.sort((a,b) => a.Index - b.Index),
+                    });
                 }
-            });
+                if (index === collections.length -1) {
+                    me.setState({
+                        filestructure:filestructure.sort((a,b) => a.Index - b.Index),
+                    });
+                }
+            })
+        });
+
+        this.setState({
+            dbListner: dbListner,
         });
         this.reloadCharts();
-        this.loadAlbums();
     }
+
+    componentWillUnmount() {
+        this.state.dbListner();
+    }
+
 
     reloadCharts(targetchart){
         if (targetchart){
@@ -106,40 +156,7 @@ class App extends Component {
         }
     }
 
-    async loadAlbums(reload, collectionOnly=false){
-        //Create controllers to target reload of specific collection and also maybe specific photo (one case?)
-        if (collectionOnly){
-            console.log('Implement Reload Only Collection here')
-        }
-        let albums = await firebase.db.collection('folders').get().then(
-            (querySnapshot) => {
-                let data = [];
-                querySnapshot.forEach(doc => {
-                    data.push(doc)
-                })
-                return data;
-            }
-        )
-        let filestructure = albums.map(
-            (value) => {
-                let header = value.data();
-                header['id']=value.id;
-                this.loadCollection(value.id).then(
-                    (value) => {
-                        if (value.length !== 0){            //Should take into account non-existing images if album empty.
-                            header['images'] = value;
-                        }
-                        else {
-                            header['images'] = null;
-                        }
-                    }
-                );
-                return header;
-            }
-        ).sort((a,b) => a.Index - b.Index)
-        this.setState({
-            filestructure: filestructure,
-        });
+    reloadState(reload){
         if (reload){
             this.setState({
                 collection:reload,
@@ -160,6 +177,8 @@ class App extends Component {
         return firebase.storage.ref(image).getDownloadURL();
     }
 
+
+    //2do Trigger Reload on image edit.
     editImage(text, id, index=null){
         let shuffleIndex = index===null ? index : this.makeShuffleArray(index);
         const saveCollection = this.state.collection;
@@ -174,10 +193,10 @@ class App extends Component {
             {merge:true})
             .then(()=>{
                 if (shuffleIndex===null){
-                    this.loadAlbums(saveCollection, true)
+                    this.reloadState(saveCollection)
                 }
                 else {
-                    this.setShuffleArray(shuffleIndex, saveCollection, true);
+                    this.setShuffleArray(shuffleIndex, saveCollection);
                 }
             })
             .catch(e => console.log(e.message));
@@ -200,12 +219,13 @@ class App extends Component {
                 {merge:true})
                 .then(()=>{
                     if (!swapIndex){
-                        this.loadAlbums(saveCollection, true)
+                        this.reloadState(saveCollection)
                     }
                     else {
                         this.setSwapCollections(swapIndex, saveCollection)
                     }
-                }).catch(e => console.log(e.message));
+                })
+                .catch(e => console.log(e.message));
         }
 
     }
@@ -231,9 +251,8 @@ class App extends Component {
                 path:path,
             })
             .then(()=> {
-                this.loadAlbums(saveCollection, true);
-                }
-            )
+                this.reloadState(saveCollection);
+            })
             .catch(e => console.log(e.message));
         }
     }
@@ -271,7 +290,7 @@ class App extends Component {
         return saveCollection;
     }
 
-    setShuffleArray(array, collection, collectionOnly=false){
+    setShuffleArray(array, collection){
         array.forEach(
             (picture, arrayIndex) => {
                 let editImage = firebase.db.collection('folders').doc(this.state.collectionId).collection('images').doc(picture.id);
@@ -280,9 +299,10 @@ class App extends Component {
                     {merge:true})
                 .then(()=>{
                     if (arrayIndex === array.length - 1){
-                        this.loadAlbums(collection, collectionOnly)
+                        this.reloadState(collection)
                     }
                 })
+                .catch(e => console.log(e.message));
             }
         )
     }
@@ -295,9 +315,10 @@ class App extends Component {
                     {merge:true})
                 .then(()=>{
                     if (arrayIndex === collections.length - 1){
-                        this.loadAlbums(saveCollection)
+                        this.reloadState(saveCollection)
                     }
                 })
+                .catch(e => console.log(e.message));
             }
         )
     }

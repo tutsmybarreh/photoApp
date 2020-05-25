@@ -4,6 +4,7 @@
 4. Refactor makeShuffleArray
 5. NightMode Bug
 6. Fix age count days.
+7. Rework DefaultScreen hooks
 
 -Landscape overflow on authScreen
 
