@@ -154,21 +154,28 @@ class App extends Component {
         });
     }
 
-    //2do Trigger Reload on image edit.
-    reloadCollection(collection) {
+    //Reload images after image edit
+    reloadCollection(collection, collectionId) {
+        let record = this.state.filestructure.find(collection => collection.id === collectionId);
+        let index = this.state.filestructure.indexOf(record);
+        this.loadCollection(collectionId).then((value) => record = this.setImages(value, record));
+        let newStruct = this.state.filestructure;
+        newStruct[index] = record;
+        this.setState({
+            filestructure:newStruct,
+        });
         this.reloadState(collection);
     }
 
+    //Add images subcollection, if existing to collection
     setImages(value, header) {
         if (value.length !== 0){            //Should take into account non-existing images if album empty.
-            header['images'] = value;
+            return header['images'] = value;
         }
-        else {
-            header['images'] = null;
-        }
-        return header;
+        return header['images'] = null;        
     }
 
+    //Get image for collectionview
     getImage(image){
         return firebase.storage.ref(image).getDownloadURL();
     }
@@ -176,6 +183,7 @@ class App extends Component {
     editImage(text, id, index=null){
         let shuffleIndex = index===null ? index : this.makeShuffleArray(index);
         const saveCollection = this.state.collection;
+        const collectionId = this.state.collectionId;
         this.setState({
             scrollTo:window.scrollY,
             fullscreenText:text,
@@ -187,10 +195,10 @@ class App extends Component {
             {merge:true})
             .then(()=>{
                 if (shuffleIndex===null){
-                    this.reloadCollection(saveCollection);
+                    this.reloadCollection(saveCollection, collectionId);
                 }
                 else {
-                    this.setShuffleArray(shuffleIndex, saveCollection);
+                    this.setShuffleArray(shuffleIndex, saveCollection, collectionId);
                 }
             })
             .catch(e => console.log(e.message));
@@ -284,7 +292,7 @@ class App extends Component {
         return saveCollection;
     }
 
-    setShuffleArray(array, collection){
+    setShuffleArray(array, collection, collectionId){
         array.forEach(
             (picture, arrayIndex) => {
                 let editImage = firebase.db.collection('folders').doc(this.state.collectionId).collection('images').doc(picture.id);
@@ -293,7 +301,7 @@ class App extends Component {
                     {merge:true})
                 .then(()=>{
                     if (arrayIndex === array.length - 1){
-                        this.reloadCollection(collection);
+                        this.reloadCollection(collection, collectionId);
                     }
                 })
                 .catch(e => console.log(e.message));
