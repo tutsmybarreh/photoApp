@@ -16,14 +16,14 @@ function Menu(props){
 
     function closeAndReset(){
         toggleEdit(false);
-        props.toggleMenu("close");
+        props.toggleMenu(false);
     }
     return(
         <div>
             <SwipeableDrawer
                 open={props.menutoggle}
                 onClose={()=>closeAndReset()}
-                onOpen={()=>props.toggleMenu("open")}
+                onOpen={()=>props.toggleMenu(true)}
                 >
                 <div>
                     <List>

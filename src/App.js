@@ -15,6 +15,8 @@ import token from './token.json';
 import hash from 'crypto-js/sha256';
 import firebase from './firebase.js';
 
+let dbListner;
+
 class App extends Component {
     constructor(props){
         super(props);
@@ -56,37 +58,19 @@ class App extends Component {
         })
         let me = this;
         let filestructure = me.state.filestructure;
-        let dbListner = firebase.db.collection('folders')
+        dbListner = firebase.db.collection('folders')
         .onSnapshot(function(snapshot) {
             snapshot.docChanges().forEach(function(change, index, collections) {
                 if (change.type === 'added') {
                     let header = change.doc.data();
                     header['id']=change.doc.id; 
-                    me.loadCollection(change.doc.id).then(
-                        (value) => {
-                            if (value.length !== 0){            //Should take into account non-existing images if album empty.
-                                header['images'] = value;
-                            }
-                            else {
-                                header['images'] = null;
-                            }
-                        }
-                    );
+                    me.loadCollection(change.doc.id).then((value) => header = me.setImages(value, header));
                     filestructure.push(header);
                 }
                 if (change.type === 'modified') {
                     let header = change.doc.data();
                     header['id']=change.doc.id; 
-                    me.loadCollection(change.doc.id).then(
-                        (value) => {
-                            if (value.length !== 0){            //Should take into account non-existing images if album empty.
-                                header['images'] = value;
-                            }
-                            else {
-                                header['images'] = null;
-                            }
-                        }
-                    );
+                    me.loadCollection(change.doc.id).then((value) => header = me.setImages(value, header));
                     let record = filestructure.find(collection => collection.id === header.id);
                     let index = filestructure.indexOf(record);
                     filestructure[index]=header;
@@ -109,17 +93,14 @@ class App extends Component {
                 }
             })
         });
-
-        this.setState({
-            dbListner: dbListner,
-        });
         this.reloadCharts();
     }
 
     componentWillUnmount() {
-        this.state.dbListner();
+        dbListner();
     }
 
+    
 
     reloadCharts(targetchart){
         if (targetchart){
@@ -173,12 +154,25 @@ class App extends Component {
         });
     }
 
+    //2do Trigger Reload on image edit.
+    reloadCollection(collection) {
+        this.reloadState(collection);
+    }
+
+    setImages(value, header) {
+        if (value.length !== 0){            //Should take into account non-existing images if album empty.
+            header['images'] = value;
+        }
+        else {
+            header['images'] = null;
+        }
+        return header;
+    }
+
     getImage(image){
         return firebase.storage.ref(image).getDownloadURL();
     }
 
-
-    //2do Trigger Reload on image edit.
     editImage(text, id, index=null){
         let shuffleIndex = index===null ? index : this.makeShuffleArray(index);
         const saveCollection = this.state.collection;
@@ -193,7 +187,7 @@ class App extends Component {
             {merge:true})
             .then(()=>{
                 if (shuffleIndex===null){
-                    this.reloadState(saveCollection)
+                    this.reloadCollection(saveCollection);
                 }
                 else {
                     this.setShuffleArray(shuffleIndex, saveCollection);
@@ -299,7 +293,7 @@ class App extends Component {
                     {merge:true})
                 .then(()=>{
                     if (arrayIndex === array.length - 1){
-                        this.reloadState(collection)
+                        this.reloadCollection(collection);
                     }
                 })
                 .catch(e => console.log(e.message));
@@ -410,31 +404,10 @@ class App extends Component {
         })
     }
 
-    toggleMenu(input){
-        if (!input){
-            if (this.state.menutoggle){
-                this.setState({
-                    menutoggle:false,
-                });
-            }
-            else {
-                this.setState({
-                    menutoggle:true,
-                });
-            }
-        }
-        else {
-            if (input==="open"){
-                this.setState({
-                    menutoggle:true,
-                });
-            }
-            if (input==="close"){
-                this.setState({
-                    menutoggle:false,
-                });
-            }
-        }
+    toggleMenu(input = undefined){
+        this.setState({
+            menutoggle: input === undefined ? !this.state.menutoggle : input,
+        });
     }
 
     getCollections(input){
