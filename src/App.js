@@ -32,6 +32,7 @@ class App extends Component {
             fullscreenText:"",      //fullScrenData
             fullscreenIndex:null,   //fullScrenData
             fullscreenSize:null,    //fullScrenData
+            fileUpload:false,
             collectionEditor:false,
             collectionEditData:null,
             collectionAdd:false,
@@ -202,6 +203,12 @@ class App extends Component {
                 }
             })
             .catch(e => console.log(e.message));
+    }
+
+    openImageBrowser(input = undefined) {
+        this.setState({
+            imageBrowser: input === undefined ? !this.state.imageBrowser : input,
+        });
     }
 
     editCollection(id, name, description, newIndex=null, oldIndex){
@@ -547,6 +554,7 @@ class App extends Component {
                             firebaseUser={this.state.firebaseUser}
                             scrollTo={this.state.scrollTo}
                             scrollBackToImage={this.scrollBackToImage.bind(this)}
+                            openImageBrowser={this.openImageBrowser.bind(this)}
                             />
                         :!this.state.collection && this.state.auth ?
                         <DefaultScreen

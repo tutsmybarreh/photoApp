@@ -13,7 +13,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import Toolbar from '@material-ui/core/Toolbar';
 import MenuItem from '@material-ui/core/MenuItem';
 
-let color = '#3366ff';
+const color = '#3366ff';
 
 function FullscreenView(props){
     const [showText, toggleText] = useState(true);
@@ -76,7 +76,7 @@ function FullscreenView(props){
                 >
                 <img src={props.fullscreenImage} className='pictureFullScreen' alt=''/>
             </div>
-            <Fab variant='round' style={{position:'fixed',backgroundColor: '#ffffff', color: color, bottom:10, right:10}} className='exitButton' onClick={()=>props.toggleFullScreen()}>
+            <Fab variant='round' style={{position:'fixed',backgroundColor: '#fafafa', color: color, bottom:10, right:10}} onClick={()=>props.toggleFullScreen()}>
                 <Icon>close</Icon>
             </Fab>
             <Dialog open={editText} onClose={()=>toggleEdit(false)} aria-labelledby="form-dialog-title" fullWidth>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
-import WeightChart from'./weightChart.js';
-import LenghtChart from'./lenghtChart.js';
+import DataChart from'./dataChart.js';
 import IconButton from '@material-ui/core/IconButton';
 import Icon from '@material-ui/core/Icon';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -72,11 +71,21 @@ function DefaultScreen(props){
             <Typography align='center' paragraph={true}>Den 9 november, 2019, bestämde jag mig för att börja gå istället för att krypa.</Typography>
 
             <Typography align='center'>Vid min födsel vägde jag <b>3970</b> gram.</Typography>
-            <WeightChart weight={props.weight}/>
+            <DataChart 
+                data={props.weight}
+                title = 'Vikt (kg)'
+                value = '1'
+                dataPoint = 'kg'
+            />
             {props.firebaseUser ? editBar(()=>toggleMeasurmentAndSetHook('weight'), ()=>toggleRemove('weight')):null}
 
             <Typography align='center'>Jag var <b>52</b> centimeter lång.</Typography>
-            <LenghtChart height={props.height}/>
+            <DataChart 
+                data={props.height}
+                title = 'Längd (cm)'
+                value = '2'
+                dataPoint = 'cm'
+            />
             {props.firebaseUser ? editBar(()=>toggleMeasurmentAndSetHook('height'), ()=>toggleRemove('height')):null}
 
             <Dialog open={addMeasurment === 'weight' || addMeasurment === 'height'} onClose={()=>toggleMeasurment('')} fullWidth>

@@ -1,6 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import Fab from '@material-ui/core/Fab';
+import Icon from '@material-ui/core/Icon';
+
+const color = '#3366ff';
 
 function CollectionView(props) {
     const [albumArray, setAlbum] = useState([]); //Hook containing new collections
@@ -85,6 +89,14 @@ function CollectionView(props) {
                 createFirebaseAlbum(align)
                 : null
             }
+            {props.firebaseUser ? 
+                <Fab variant='round' 
+                    style={{position:'fixed',backgroundColor: '#fafafa', color: color, bottom:10, right:10}} 
+                    onClick={()=>props.openImageBrowser(true)}
+                >
+                    <Icon>add</Icon>
+                </Fab>
+            : null}
         </div>
     );
 }
