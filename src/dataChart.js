@@ -1,5 +1,4 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
 import Chart from 'react-google-charts';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
@@ -14,24 +13,23 @@ function DataChart(props){
         vAxis: {
             title: props.title,
         },
+        backgroundColor: 'transparent'
     };
     return(
         <div className='photoCard noselect'>
-            <Paper elevation={1} square={true}>
-                {props.data ? (
-                    <Chart
-                        height={'400px'}
-                        chartType="LineChart"
-                        loader={<LinearProgress />}
-                        data={loadData(props.data, props.dataPoint)}
-                        options={options}
-                        rootProps={{'data-testid' : props.value}}
-                        />
-                ):(
-                    <LinearProgress />
-                )
-            }
-        </Paper>
+            {props.data ? (
+                <Chart
+                    height={'400px'}
+                    chartType="LineChart"
+                    loader={<LinearProgress />}
+                    data={loadData(props.data, props.dataPoint)}
+                    options={options}
+                    rootProps={{'data-testid' : props.value}}
+                />
+            ):(
+                <LinearProgress />
+            )
+            }   
     </div>
 );
 }
